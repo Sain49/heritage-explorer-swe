@@ -1,0 +1,44 @@
+# Configuration for the labeler workflow
+# Add labels to pull requests based on the paths of files being changed
+
+# Label PRs that modify documentation
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.md', 'docs/**/*']
+
+# Label PRs that modify the app directory (main application code)
+app:
+  - changed-files:
+    - any-glob-to-any-file: 'app/**/*'
+
+# Label PRs that modify styles
+styles:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.css', '**/*.scss', '**/*.sass']
+
+# Label PRs that modify configuration files
+config:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - '*.config.*'
+      - '*.json'
+      - '.eslintrc*'
+      - '.prettierrc*'
+      - 'tsconfig.json'
+
+# Label PRs that modify public assets
+assets:
+  - changed-files:
+    - any-glob-to-any-file: 'public/**/*'
+
+# Label PRs that modify dependencies
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - 'package.json'
+      - 'package-lock.json'
+
+# Label PRs that modify GitHub workflows
+github-actions:
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
