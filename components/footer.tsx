@@ -9,7 +9,7 @@ export default function Footer() {
           <li>
             <Link
               href="https://docs.visitsweden.com/en/"
-              target="-blank"
+              target="_blank"
               rel="noopener noreferrer"
             >
               Data sourced from Visit Sweden National API
