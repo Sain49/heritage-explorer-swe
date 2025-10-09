@@ -1,20 +1,22 @@
+import Link from "next/link";
+
 export default function Header() {
   return (
     <header>
       <div>
         <h1>
-          <a href="/">Heritage Explorer</a>
+          <Link href="/">Heritage Explorer</Link>
         </h1>
         <nav>
           <ul>
             <li>
-              <a href="/site-explorer">Explore Sites</a>
+              <Link href="/site-explorer">Explore Sites</Link>
             </li>
             <li>
-              <a href="/my-route">My Route</a>
+              <Link href="/my-route">My Route</Link>
             </li>
             <li>
-              <a href="/contact-us">Contact Us</a>
+              <Link href="/contact-us">Contact Us</Link>
             </li>
           </ul>
         </nav>
