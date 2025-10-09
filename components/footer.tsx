@@ -7,8 +7,13 @@ export default function Footer() {
         <ul>
           <li>© 2025 Heritage Explorer. All rights reserved.</li>
           <li>
-            <Link href="https://docs.visitsweden.com/en/"></Link>Data sourced
-            from Visit Sweden National API
+            <Link
+              href="https://docs.visitsweden.com/en/"
+              target="-blank"
+              rel="noopener noreferrer"
+            >
+              Data sourced from Visit Sweden National API
+            </Link>
           </li>
           <li>
             <Link href="/contact-us">Contact Us</Link>
