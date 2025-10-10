@@ -108,3 +108,33 @@ function extractImageUrl(
 
   return null;
 }
+
+// get the region name from the region url
+function extractRegion(spatial: { "@id": string } | undefined): string | null {
+  if (!spatial || !spatial["@id"]) {
+    return null;
+  }
+
+  // example: "http://data.visitsweden.com/region/stockholm" -> "stockholm"
+  const parts = spatial["@id"].split("/");
+  return parts[parts.length - 1] || null;
+}
+
+// get category name
+function extractCategory(site: HeritageSite): string {
+  // if there's a more specific type like museum
+  if (site["schema:additionalType"]) {
+    const additionalType = site["schema:additionalType"]["@id"];
+    const parts = additionalType.split("/");
+    const category = parts[parts.length - 1];
+    return category || "Place";
+  }
+
+  // otherwise use the main type
+  const mainType = site["@type"];
+  if (mainType.includes(":")) {
+    return mainType.split(":")[1];
+  }
+
+  return mainType;
+}
