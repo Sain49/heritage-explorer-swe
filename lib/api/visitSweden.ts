@@ -1,0 +1,53 @@
+import type {
+  APIResponse,
+  SearchParams,
+  SimplifiedHeritageSite,
+  HeritageSite,
+  MultiLanguageText,
+  ImageObject,
+} from "@/types/visitSweden";
+
+// Constants
+const BASE_URL = "https://data.visitsweden.com/store/search";
+const DEFAULT_LIMIT = 20;
+
+// the Api uses a special query language (Solr), due to this need to combine filters into one string
+// example: "public:true AND rdfType:http\://schema.org/Place AND museum AND dcterms_spatial:*stockholm*"
+function buildSearchQuery(params: SearchParams): string {
+  let query = "public:true";
+
+  // add type filter
+  const typeFilter = params.type || "Place";
+  const encodedType = `http\\://schema.org/${typeFilter}`;
+  query += ` AND rdfType:${encodedType}`;
+
+  // add keyword search
+  if (params.location && params.keyword?.trim()) {
+    query += ` AND ${params.keyword.trim()}`;
+  }
+
+  // add location filter
+  if (params.location && params.location.trim()) {
+    query += ` AND dcterms_spatial:*${params.location.trim()}*`;
+  }
+
+  return query;
+}
+
+// create the complete url for the api
+function buildApiUrl(params: SearchParams): string {
+  const query = buildSearchQuery(params);
+  const limit = params.limit || DEFAULT_LIMIT;
+  const offset = params.offset || 0;
+
+  const urlParams = new URLSearchParams({
+    type: "solr",
+    query: query,
+    limit: limit.toString(),
+    offset: offset.toString(),
+    rdFormat: "application/ld+json", // Json-ld format based on Visit Sweden api
+  });
+
+  // combine base url with params
+  return `${BASE_URL}?${urlParams.toString()}`;
+}
