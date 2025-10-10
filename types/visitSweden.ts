@@ -54,3 +54,47 @@ export type HeritageSite = {
   "schema:additionalType"?: { "@id": string }; // more specific type
   "schema:openingHoursSpecification"?: unknown; // opening hours
 };
+
+// Api response tyes
+export type APIResponse = {
+  results: APIEntry[];
+  hits: number;
+  offset: number;
+  limit: number;
+};
+
+//  individual entry from the api
+export type APIEntry = {
+  entryId: string;
+  contextId: string;
+  resource: HeritageSite;
+  metadat?: {
+    predicate: string;
+    object: unknown;
+  }[];
+};
+
+// options for searching heritage sites
+export type SearchParams = {
+  keyword?: string;
+  location?: string;
+  limit?: string;
+  offset?: string;
+  type?: string;
+};
+
+export type SimplifiedHeritageSite = {
+  id: string;
+  name: string;
+  description: string;
+  descriptionSwedish?: string;
+  imageUrl: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  address: string | null;
+  city: string | null;
+  region: string | null;
+  websiteUrl: string | null;
+  category: string;
+  phone: string | null;
+};
