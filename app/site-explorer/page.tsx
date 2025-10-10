@@ -47,8 +47,29 @@ export default function SiteExplorer() {
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder="museum, castle, church.."
+            placeholder="museum, castle, church..."
           />
+        </div>
+
+        {/* location input */}
+        <div>
+          <label htmlFor="location">Location (region)</label>
+          <input
+            id="location"
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="stockholm, gotland, dalarna..."
+          />
+        </div>
+
+        {/* buttons */}
+        <div>
+          <button onClick={handleSearch} disabled={isLoading}>
+            {isLoading ? "Searching..." : "Search"}
+          </button>
+
+          <button onClick={handleReset}>Reset</button>
         </div>
       </div>
     </div>
