@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { searchHeritageSites } from "@/lib/api/visitSweden";
 import type { SimplifiedHeritageSite } from "@/types/visitSweden";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function SiteExplorer() {
   const [keyword, setKeyword] = useState("");
@@ -37,6 +39,7 @@ export default function SiteExplorer() {
     <div>
       <h1>Heritage Site Explorer</h1>
 
+      {/* Search form */}
       <div>
         <h2>Search heritage sites</h2>
         {/* keyword input */}
@@ -71,6 +74,72 @@ export default function SiteExplorer() {
 
           <button onClick={handleReset}>Reset</button>
         </div>
+      </div>
+
+      {/* result section */}
+      <div>
+        {totalResults > 0 && <p>Found {totalResults} hertiage sites</p>}
+
+        {isLoading && <p>Loading...</p>}
+
+        {sites.map((site) => (
+          <div key={site.id}>
+            <h3>{site.name}</h3>
+
+            {site.imageUrl && (
+              <Image
+                src={site.imageUrl}
+                alt={site.name}
+                width={300}
+                height={200}
+              />
+            )}
+
+            <p>
+              <strong>Category</strong> {site.category}
+            </p>
+
+            {site.description && (
+              <p>
+                <strong>Description:</strong> {site.description}
+              </p>
+            )}
+
+            {site.city && (
+              <p>
+                <strong>City:</strong> {site.city}
+              </p>
+            )}
+            {site.region && (
+              <p>
+                <strong>Region:</strong> {site.region}
+              </p>
+            )}
+            {site.address && (
+              <p>
+                <strong>Address:</strong> {site.address}
+              </p>
+            )}
+
+            {site.websiteUrl && (
+              <p>
+                <Link
+                  href={site.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit website
+                </Link>
+              </p>
+            )}
+
+            <hr />
+          </div>
+        ))}
+
+        {!isLoading && sites.length === 0 && totalResults === 0 && (
+          <p>No sites found. Try searching again!</p>
+        )}
       </div>
     </div>
   );
