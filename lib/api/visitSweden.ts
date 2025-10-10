@@ -51,3 +51,36 @@ function buildApiUrl(params: SearchParams): string {
   // combine base url with params
   return `${BASE_URL}?${urlParams.toString()}`;
 }
+
+// extract the English text or fall back to Swedish or first in the array or empty string
+function extractText(
+  field: string | MultiLanguageText[] | undefined,
+  preferredLanguage = "en"
+): string {
+  if (typeof field === "string") {
+    return field;
+  }
+
+  if (Array.isArray(field)) {
+    // English
+    const preferred = field.find(
+      (item) => item["@language"] === preferredLanguage
+    );
+    if (preferred) {
+      return preferred["@value"];
+    }
+
+    // Swedish
+    const swedish = field.find((i) => i["@language"] === "sv");
+    if (swedish) {
+      return swedish["@value"];
+    }
+
+    // if neither, return the first one
+    if (field.length > 0) {
+      return field[0]["@value"];
+    }
+  }
+
+  return "";
+}
