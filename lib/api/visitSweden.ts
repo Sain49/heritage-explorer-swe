@@ -7,6 +7,7 @@ import type {
   ImageObject,
 } from "@/types/visitSweden";
 import { extractEtag } from "next/dist/server/image-optimizer";
+import { off } from "process";
 
 // Constants
 const BASE_URL = "https://data.visitsweden.com/store/search";
@@ -159,5 +160,38 @@ function transformHeritageSite(site: HeritageSite): SimplifiedHeritageSite {
         : site["schema:url"]?.["@id"] || null,
     category: extractCategory(site),
     phone: site["schema:telephone"] || null,
+  };
+}
+
+// main function to search for heritage sites
+export async function searchHeritageSites(params: SearchParams = {}): Promise<{
+  sites: SimplifiedHeritageSite[];
+  total: number;
+  offset: number;
+  limit: number;
+}> {
+  const url = buildApiUrl(params);
+
+  console.log("fetching from: ", url); // for dubugging
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  }
+
+  const data: APIResponse = await response.json();
+
+  const sites = data.results.map((entry) =>
+    transformHeritageSite(entry.resource)
+  );
+
+  return {
+    sites,
+    total: data.hits,
+    offset: data.offset,
+    limit: data.limit,
   };
 }
