@@ -84,3 +84,27 @@ function extractText(
 
   return "";
 }
+
+// get image url
+function extractImageUrl(
+  image: string | ImageObject | ImageObject[] | undefined
+): string | null {
+  // simple url string
+  if (typeof image === "string") {
+    return image;
+  }
+
+  // is an array then get the first oen
+  if (Array.isArray(image)) {
+    if (image.length > 0) {
+      return image[0]["@id"] || image[0]["schema:contentUrl"] || null;
+    }
+  }
+
+  // is an object
+  if (typeof image === "object" && !Array.isArray(image)) {
+    return image["@id"] || image["schema:contentUrl"] || null;
+  }
+
+  return null;
+}
