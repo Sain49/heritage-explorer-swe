@@ -78,9 +78,9 @@ export type APIEntry = {
 export type SearchParams = {
   keyword?: string;
   location?: string;
-  limit?: string;
-  offset?: string;
-  type?: string;
+  limit?: number;
+  offset?: number;
+  type?: number;
 };
 
 export type SimplifiedHeritageSite = {

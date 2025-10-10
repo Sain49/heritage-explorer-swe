@@ -6,8 +6,6 @@ import type {
   MultiLanguageText,
   ImageObject,
 } from "@/types/visitSweden";
-import { extractEtag } from "next/dist/server/image-optimizer";
-import { off } from "process";
 
 // Constants
 const BASE_URL = "https://data.visitsweden.com/store/search";
@@ -194,4 +192,22 @@ export async function searchHeritageSites(params: SearchParams = {}): Promise<{
     offset: data.offset,
     limit: data.limit,
   };
+}
+
+// search by keyword only
+export async function searchByKeyword(keyword: string, limit = DEFAULT_LIMIT) {
+  return searchHeritageSites({ keyword, limit });
+}
+
+// search by location only
+export async function searchByLocation(
+  location: string,
+  limit = DEFAULT_LIMIT
+) {
+  return searchHeritageSites({ location, limit });
+}
+
+// get all sites paginated
+export async function getAllHeritageSites(limit = DEFAULT_LIMIT, offset = 0) {
+  return searchHeritageSites({ limit, offset });
 }
