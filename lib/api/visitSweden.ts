@@ -6,6 +6,7 @@ import type {
   MultiLanguageText,
   ImageObject,
 } from "@/types/visitSweden";
+import { extractEtag } from "next/dist/server/image-optimizer";
 
 // Constants
 const BASE_URL = "https://data.visitsweden.com/store/search";
@@ -137,4 +138,26 @@ function extractCategory(site: HeritageSite): string {
   }
 
   return mainType;
+}
+
+// converts api data to a simpler format
+function transformHeritageSite(site: HeritageSite): SimplifiedHeritageSite {
+  return {
+    id: site["@id"],
+    name: extractText(site["schema:name"]),
+    description: extractText(site["schema:description"], "en"),
+    descriptionSwedish: extractText(site["schema:description"], "sv"),
+    imageUrl: extractImageUrl(site["schema:image"]),
+    latitude: site["schema:geo"]?.["schema:latitude"] || null,
+    longitude: site["schema:geo"]?.["schema:longitude"] || null,
+    address: site["schema:address"]?.["schema:streetAddress"] || null,
+    city: site["schema:address"]?.["schema:addressLocality"] || null,
+    region: extractRegion(site["dcterms:spatial"]),
+    websiteUrl:
+      typeof site["schema:url"] === "string"
+        ? site["schema:url"]
+        : site["schema:url"]?.["@id"] || null,
+    category: extractCategory(site),
+    phone: site["schema:telephone"] || null,
+  };
 }
