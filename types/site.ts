@@ -132,3 +132,26 @@ export type Site = {
   importance?: number; // Search relevance score (from Nominatim)
   lastUpdated?: string; // ISO date string
 };
+
+// search parameters type
+export type SiteSearchParams = {
+  query?: string; // free-text search ("Vasa Museum")
+  category?: string; // filter by type (museum, castle, etc.)
+  location?: string; // filter by location (Stockholm, Göteborg, etc.)
+  limit?: number; // max number of results (default: 10)
+  boundingBox?: {
+    // geographic area to search within
+    minLat: number;
+    maxLat: number;
+    minLon: number;
+    maxLon: number;
+  };
+};
+
+// api response wrapper type
+export type SiteResponse = {
+  sites: Site[]; // array of sites found
+  total: number; // total count (for pagination)
+  query: string; // search query used
+  timestamp: string; // when this search was performed
+};
