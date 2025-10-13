@@ -24,3 +24,23 @@ export type NominatimResult = {
   // bounding box: [min_lat, max_lat, min_lon, max_lon]
   boundingbox?: string[];
 };
+
+// OPENSTREETMAP (OSM) XML Api types
+export type OSMTag = {
+  k: string; // key (name)
+  v: string; // value
+};
+
+// OSM element (node/way/relation)
+export type OSMElement = {
+  type: "node" | "way" | "relation";
+  id: number;
+  lat?: number;
+  lon?: number;
+  tags?: OSMTag[]; // metadata
+};
+
+// The full OSM XML Api response
+export type OSMResponse = {
+  elements: OSMElement[];
+};
