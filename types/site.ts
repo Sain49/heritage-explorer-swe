@@ -98,3 +98,37 @@ export type WikipediaSummary = {
     };
   };
 };
+
+// unified site type
+export type Site = {
+  // Basic Information
+  id: string;
+  name: string; // Site name (Vasa Museum)
+  description: string; // Full description
+  category: string; // Type (museum, castle, church)
+
+  // Location Data
+  latitude: number; // decimal latitude
+  longitude: number; // decimal longitude
+  address: string | null; // Street address
+  city: string | null; // city
+  postcode: string | null; // postal code
+  country: string | null; // country
+
+  // more content
+  imageUrl: string | null; // main image URL (from Wikidata or Wikipedia)
+  imageAlt: string | null; // Image alt text for accessibility
+  websiteUrl: string | null; // Official website
+  phone: string | null; // Phone number
+  openingHours: string | null; // Opening hours text
+
+  // External references
+  wikidataId: string | null; // Wikidata QID ("Q901371")
+  wikipediaUrl: string | null; // Wikipedia article url
+  osmId: number; // OpenStreetMap Id
+  osmType: "node" | "way" | "relation"; // OSM object type
+
+  // Metadata
+  importance?: number; // Search relevance score (from Nominatim)
+  lastUpdated?: string; // ISO date string
+};
