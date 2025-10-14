@@ -82,7 +82,7 @@ export type WikipediaSummary = {
     width: number;
     height: number;
   };
-  contetn_urls?: {
+  content_urls?: {
     desktop?: {
       page: string; // link to full article
     };
