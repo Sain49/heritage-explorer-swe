@@ -1,38 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { searchHeritageSites } from "@/lib/api/visitSweden";
-import type { SimplifiedHeritageSite } from "@/types/visitSweden";
 import Image from "next/image";
 import Link from "next/link";
 
+import type { NominatimResult } from "@/types/site";
+import { searchByName } from "@/lib/api/nominatim";
+
 export default function SiteExplorer() {
-  const [keyword, setKeyword] = useState("");
-  const [location, setLocation] = useState("");
-  const [sites, setSites] = useState<SimplifiedHeritageSite[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sites, setSites] = useState<NominatimResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [totalResults, setTotalResults] = useState(0); // store total number of result
 
   const handleSearch = async () => {
+    // don't search
+    if (!searchQuery.trim()) {
+      return;
+    }
+
     setIsLoading(true);
 
-    const result = await searchHeritageSites({
-      keyword: keyword || undefined,
-      location: location || undefined,
-      limit: 20,
-    });
-
-    setSites(result.sites);
-    setTotalResults(result.total);
+    try {
+      const results = await searchByName(searchQuery);
+      setSites(results);
+    } catch (error) {
+      console.error("Search failed: ", error);
+      setSites([]);
+    }
 
     setIsLoading(false);
   };
 
   const handleReset = () => {
-    setKeyword("");
-    setLocation("");
+    setSearchQuery("");
     setSites([]);
-    setTotalResults(0);
   };
 
   return (
@@ -42,19 +43,25 @@ export default function SiteExplorer() {
       {/* Search form */}
       <div>
         <h2>Search heritage sites</h2>
-        {/* keyword input */}
+        {/* search input */}
         <div>
-          <label htmlFor="keyword">Keyword:</label>
+          <label htmlFor="search">Search:</label>
           <input
-            id="keyword"
+            id="search"
             type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            placeholder="museum, castle, church..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Vasa Museum, Gripsholm Caslte..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
           />
         </div>
+      </div>
 
-        {/* location input */}
+      {/* location input
         <div>
           <label htmlFor="location">Location (region)</label>
           <input
@@ -64,81 +71,41 @@ export default function SiteExplorer() {
             onChange={(e) => setLocation(e.target.value)}
             placeholder="stockholm, gotland, dalarna..."
           />
-        </div>
+        </div> */}
 
-        {/* buttons */}
-        <div>
-          <button onClick={handleSearch} disabled={isLoading}>
-            {isLoading ? "Searching..." : "Search"}
-          </button>
+      {/* buttons */}
+      <div>
+        <button onClick={handleSearch} disabled={isLoading}>
+          {isLoading ? "Searching..." : "Search"}
+        </button>
 
-          <button onClick={handleReset}>Reset</button>
-        </div>
+        <button onClick={handleReset}>Reset</button>
       </div>
 
       {/* result section */}
       <div>
-        {totalResults > 0 && <p>Found {totalResults} hertiage sites</p>}
+        {sites.length > 0 && <p>Found {sites.length} sites</p>}
 
         {isLoading && <p>Loading...</p>}
 
         {sites.map((site) => (
-          <div key={site.id}>
-            <h3>{site.name}</h3>
-
-            {site.imageUrl && (
-              <Image
-                src={site.imageUrl}
-                alt={site.name}
-                width={300}
-                height={200}
-              />
-            )}
+          <div key={site.place_id}>
+            <h3>{site.name || "Unknown Site"}</h3>
 
             <p>
-              <strong>Category</strong> {site.category}
+              <strong>Category:</strong> {site.type}
             </p>
 
-            {site.description && (
-              <p>
-                <strong>Description:</strong> {site.description}
-              </p>
-            )}
-
-            {site.city && (
-              <p>
-                <strong>City:</strong> {site.city}
-              </p>
-            )}
-            {site.region && (
-              <p>
-                <strong>Region:</strong> {site.region}
-              </p>
-            )}
-            {site.address && (
-              <p>
-                <strong>Address:</strong> {site.address}
-              </p>
-            )}
-
-            {site.websiteUrl && (
-              <p>
-                <Link
-                  href={site.websiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Visit website
-                </Link>
-              </p>
-            )}
+            <p>
+              <strong>Location:</strong> {site.address?.city || "Sweden"}
+            </p>
 
             <hr />
           </div>
         ))}
 
-        {!isLoading && sites.length === 0 && totalResults === 0 && (
-          <p>No sites found. Try searching again!</p>
+        {!isLoading && sites.length === 0 && searchQuery && (
+          <p>No sites found. Try a different search!</p>
         )}
       </div>
     </div>
