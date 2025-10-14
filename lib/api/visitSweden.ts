@@ -170,7 +170,7 @@ export async function searchHeritageSites(params: SearchParams = {}): Promise<{
 }> {
   const url = buildApiUrl(params);
 
-  console.log("fetching from: ", url); // for dubugging
+  console.log("fetching from: ", url); // for debugging
 
   const response = await fetch(url);
 
