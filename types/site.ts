@@ -5,7 +5,8 @@ export type NominatimResult = {
   osm_id: number;
   lat: string;
   lon: string;
-  display_name: string;
+  name: string;
+  display_name: string; // full address
   class: string; // category (tourism, historic, amenity)
   type: string; // subcategory (museum, castle, church)
   importance: number;
