@@ -55,7 +55,7 @@ export type HeritageSite = {
   "schema:openingHoursSpecification"?: unknown; // opening hours
 };
 
-// Api response tyes
+// Api response types
 export type APIResponse = {
   results: APIEntry[];
   hits: number;
