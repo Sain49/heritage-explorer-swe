@@ -17,6 +17,7 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
     q: query,
     limit: "10",
     addressdetails: "1",
+    countrycodes: "se",
   });
 
   const url = `${NOMINATIM_BASE_URL}/search?${params.toString()}`;
