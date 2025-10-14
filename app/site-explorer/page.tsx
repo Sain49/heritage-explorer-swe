@@ -27,15 +27,15 @@ export default function SiteExplorer() {
         "monument",
         "church",
         "ruins",
-        "archaeological_site",
+        "archaeological",
       ];
 
       let results: NominatimResult[];
       if (categories.includes(searchQuery.toLowerCase())) {
-        // Use Overpass for categories
+        // use Overpass for categories
         results = await searchByCategory(searchQuery.toLowerCase());
       } else {
-        // Use Nominatim for specific names and combined searches
+        // use Nominatim for specific names and combined searches
         results = await searchByName(searchQuery);
       }
       setSites(results);
@@ -113,18 +113,18 @@ export default function SiteExplorer() {
         {error && <p style={{ color: "red" }}>{error}</p>}
 
         {sites.map((site) => (
-          <div key={site.place_id}>
-            <h3>{site.name || "Unknown Site"}</h3>
-
+          <div key={site.osmId}>
+            {" "}
+            {/* Changed from place_id */}
+            <h3>{site.name}</h3>
             <p>
-              <strong>Category:</strong> {site.type}
+              <strong>Coordinates:</strong> {site.latitude}, {site.longitude}
             </p>
-
             <p>
-              <strong>Location:</strong>{" "}
-              {site.address?.city || site.address?.city || "Sweden"}
+              <em>
+                OSM: {site.osmType}/{site.osmId}
+              </em>
             </p>
-
             <hr />
           </div>
         ))}
