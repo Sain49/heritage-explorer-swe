@@ -94,7 +94,7 @@ function extractImageUrl(
     return image;
   }
 
-  // is an array then get the first oen
+  // is an array then get the first one
   if (Array.isArray(image)) {
     if (image.length > 0) {
       return image[0]["@id"] || image[0]["schema:contentUrl"] || null;
