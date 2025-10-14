@@ -27,6 +27,11 @@ interface OverpassApiElement {
   tags?: { [key: string]: string };
 }
 
+type TagMapping = {
+  key: string;
+  value: string;
+};
+
 // helper func: delay between requests due to nominatim limits requests to 1
 // request per second
 function delay(ms: number): Promise<void> {
@@ -93,7 +98,7 @@ export async function searchByCategory(
   let query = "";
 
   // Map categories to OSM tags
-  const tagMappings: Record<string, { key: string; value: string }> = {
+  const tagMappings: Record<string, TagMapping> = {
     museum: { key: "tourism", value: "museum" },
     castle: { key: "historic", value: "castle" },
     monument: { key: "historic", value: "monument" },
@@ -143,6 +148,8 @@ export async function searchByCategory(
         name: element.tags?.name || `Unknown ${category}`,
         latitude: element.lat || element.center?.lat,
         longitude: element.lon || element.center?.lon,
+        class: tag.key,
+        type: tag.value,
       })
     );
 
