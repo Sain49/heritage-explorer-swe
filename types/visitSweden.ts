@@ -68,7 +68,7 @@ export type APIEntry = {
   entryId: string;
   contextId: string;
   resource: HeritageSite;
-  metadat?: {
+  metadata?: {
     predicate: string;
     object: unknown;
   }[];
