@@ -27,7 +27,7 @@ export default function SiteExplorer() {
         "monument",
         "church",
         "ruins",
-        "archaeological",
+        "archaeological_site",
       ];
 
       let results: NominatimResult[];
