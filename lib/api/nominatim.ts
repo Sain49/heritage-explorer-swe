@@ -5,6 +5,28 @@ const OVERPASS_BASE_URL = "https://overpass-api.de/api/interpreter";
 
 const USER_AGENT = "HeritageExplorerSwe/1.0 (Educational Project)";
 
+// api responses
+interface NominatimApiItem {
+  osm_id: number;
+  osm_type: string;
+  lat: string;
+  lon: string;
+  name?: string;
+  display_name: string;
+  class: string;
+  type: string;
+  boundingbox?: string[];
+}
+
+interface OverpassApiElement {
+  id: number;
+  type: string;
+  lat?: number;
+  lon?: number;
+  center?: { lat: number; lon: number };
+  tags?: { [key: string]: string };
+}
+
 // helper func: delay between requests due to nominatim limits requests to 1
 // request per second
 function delay(ms: number): Promise<void> {
@@ -37,16 +59,18 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
     }
 
     const apiResults = await response.json();
-    const results: NominatimResult[] = apiResults.map((item: any) => ({
-      osmId: item.osm_id,
-      osmType: item.osm_type,
-      name: item.name || item.display_name.split(",")[0],
-      latitude: parseFloat(item.lat),
-      longitude: parseFloat(item.lon),
-      class: item.class,
-      type: item.type,
-      boundingbox: item.boundingbox,
-    }));
+    const results: NominatimResult[] = apiResults.map(
+      (item: NominatimApiItem) => ({
+        osmId: item.osm_id,
+        osmType: item.osm_type,
+        name: item.name || item.display_name.split(",")[0],
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.lon),
+        class: item.class,
+        type: item.type,
+        boundingbox: item.boundingbox,
+      })
+    );
 
     // filter to only heritage sites
     const heritageSites = results.filter(isHeritageSite);
@@ -64,8 +88,7 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
 
 // category-based searches using Overpass API
 export async function searchByCategory(
-  category: string,
-  location?: string
+  category: string
 ): Promise<NominatimResult[]> {
   let query = "";
 
@@ -113,13 +136,15 @@ export async function searchByCategory(
 
     const data = await response.json();
 
-    const results: NominatimResult[] = data.elements.map((element: any) => ({
-      osmId: element.id,
-      osmType: element.type,
-      name: element.tags?.name || `Unknown ${category}`,
-      latitude: element.lat || element.center?.lat,
-      longitude: element.lon || element.center?.lon,
-    }));
+    const results: NominatimResult[] = data.elements.map(
+      (element: OverpassApiElement) => ({
+        osmId: element.id,
+        osmType: element.type,
+        name: element.tags?.name || `Unknown ${category}`,
+        latitude: element.lat || element.center?.lat,
+        longitude: element.lon || element.center?.lon,
+      })
+    );
 
     console.log(`Found ${results.length} ${category} sites`);
 
