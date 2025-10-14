@@ -36,7 +36,17 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
       throw new Error(`Api failed: ${response.status}`);
     }
 
-    const results: NominatimResult[] = await response.json();
+    const apiResults = await response.json();
+    const results: NominatimResult[] = apiResults.map((item: any) => ({
+      osmId: item.osm_id,
+      osmType: item.osm_type,
+      name: item.name || item.display_name.split(",")[0],
+      latitude: parseFloat(item.lat),
+      longitude: parseFloat(item.lon),
+      class: item.class,
+      type: item.type,
+      boundingbox: item.boundingbox,
+    }));
 
     // filter to only heritage sites
     const heritageSites = results.filter(isHeritageSite);
@@ -86,11 +96,6 @@ export async function searchByCategory(
     out center 20;
   `;
 
-  if (location) {
-    // For location-based, we could filter by bounding box, but for simplicity, search globally and filter later
-    // Or use Nominatim to get bbox for location
-  }
-
   console.log(`Overpass query for ${category}:`, query.trim());
 
   try {
@@ -108,29 +113,17 @@ export async function searchByCategory(
 
     const data = await response.json();
 
-    // Convert Overpass results to Nominatim-like format
     const results: NominatimResult[] = data.elements.map((element: any) => ({
-      place_id: element.id,
-      licence: "",
-      osm_type: element.type,
-      osm_id: element.id,
-      lat: element.lat || element.center?.lat,
-      lon: element.lon || element.center?.lon,
-      class: tag.key,
-      type: tag.value,
-      place_rank: 30,
-      importance: 0.5,
-      addresstype: "historic",
-      name: element.tags?.name || `${category} ${element.id}`,
-      display_name:
-        element.tags?.name || `${category} at ${element.lat}, ${element.lon}`,
-      address: {},
-      boundingbox: [],
+      osmId: element.id,
+      osmType: element.type,
+      name: element.tags?.name || `Unknown ${category}`,
+      latitude: element.lat || element.center?.lat,
+      longitude: element.lon || element.center?.lon,
     }));
 
     console.log(`Found ${results.length} ${category} sites`);
 
-    await delay(1000); // Respect API limits
+    await delay(1000);
 
     return results;
   } catch (error) {
