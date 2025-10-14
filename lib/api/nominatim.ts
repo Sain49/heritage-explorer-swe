@@ -16,7 +16,7 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
   const params = new URLSearchParams({
     format: "json",
     q: query,
-    limit: "50",
+    limit: "20",
     addressdetails: "1",
     countrycodes: "se",
   });
@@ -52,7 +52,7 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
   }
 }
 
-// New function for category-based searches using Overpass API
+// category-based searches using Overpass API
 export async function searchByCategory(
   category: string,
   location?: string
@@ -74,7 +74,7 @@ export async function searchByCategory(
     throw new Error(`Unsupported category: ${category}`);
   }
 
-  // Build Overpass query
+  // build Overpass query
   query = `
     [out:json][timeout:60];
     area["ISO3166-1"="SE"];
@@ -83,7 +83,7 @@ export async function searchByCategory(
       way["${tag.key}"="${tag.value}"](area);
       relation["${tag.key}"="${tag.value}"](area);
     );
-    out center 50;
+    out center 20;
   `;
 
   if (location) {

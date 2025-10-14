@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 
 import type { NominatimResult } from "@/types/site";
-import { searchByName } from "@/lib/api/nominatim";
+import { searchByName, searchByCategory } from "@/lib/api/nominatim";
 
 export default function SiteExplorer() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sites, setSites] = useState<NominatimResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async () => {
     // don't search
@@ -19,13 +18,35 @@ export default function SiteExplorer() {
     }
 
     setIsLoading(true);
+    setError(null);
 
     try {
-      const results = await searchByName(searchQuery);
+      const categories = [
+        "museum",
+        "castle",
+        "monument",
+        "church",
+        "ruins",
+        "archaeological_site",
+      ];
+
+      let results: NominatimResult[];
+      if (categories.includes(searchQuery.toLowerCase())) {
+        // Use Overpass for categories
+        results = await searchByCategory(searchQuery.toLowerCase());
+      } else {
+        // Use Nominatim for specific names and combined searches
+        results = await searchByName(searchQuery);
+      }
       setSites(results);
     } catch (error) {
       console.error("Search failed: ", error);
       setSites([]);
+      setError(
+        error instanceof Error && error.message.includes("504")
+          ? "Search timed out. Try a more specific search or different category."
+          : "Search failed. Please try again."
+      );
     }
 
     setIsLoading(false);
@@ -34,6 +55,7 @@ export default function SiteExplorer() {
   const handleReset = () => {
     setSearchQuery("");
     setSites([]);
+    setError(null);
   };
 
   return (
@@ -51,7 +73,7 @@ export default function SiteExplorer() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Vasa Museum, Gripsholm Caslte..."
+            placeholder="Vasa Museum, Gripsholm Castle, museum, castle..."
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleSearch();
@@ -88,6 +110,8 @@ export default function SiteExplorer() {
 
         {isLoading && <p>Loading...</p>}
 
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
         {sites.map((site) => (
           <div key={site.place_id}>
             <h3>{site.name || "Unknown Site"}</h3>
@@ -97,7 +121,8 @@ export default function SiteExplorer() {
             </p>
 
             <p>
-              <strong>Location:</strong> {site.address?.city || "Sweden"}
+              <strong>Location:</strong>{" "}
+              {site.address?.city || site.address?.city || "Sweden"}
             </p>
 
             <hr />
