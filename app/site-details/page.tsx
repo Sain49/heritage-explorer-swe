@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 import type { OSMElement } from "@/types/site";
 import { fetchOSMDetails, getTagValue } from "@/lib/api/osm";
@@ -48,97 +49,124 @@ export default function SiteDetails() {
   // show error if missing parameters
   if (!osmId || !osmType) {
     return (
-      <div>
-        <h1>Site Details</h1>
-        <p>
+      <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-2xl font-bold mb-6">Site Details</h1>
+        <p className="text-red-600">
           Error: Missing site information. Please go back and select a site.
         </p>
+        <Link href="/site-explorer">
+          <button className="mt-4 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600">
+            Back to Explorer
+          </button>
+        </Link>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>Site Details</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="mb-6">
+        <Link href="/site-explorer">
+          <button className="mb-4 px-4 py-2 bg-gray-400 text-white hover:bg-gray-600">
+            ← Back to Explorer
+          </button>
+        </Link>
+        <h1 className="text-2xl font-bold">Site Details</h1>
+      </div>
 
-      {isLoading && <p>Loading site details...</p>}
+      {isLoading && (
+        <p className="text-blue-600 mb-4">Loading site details...</p>
+      )}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="text-red-600 mb-4">{error}</p>}
 
       {osmDetails && (
-        <div>
-          <h2>OSM Information</h2>
-          <p>
-            <strong>OSM ID:</strong> {osmDetails.type}/{osmDetails.id}
-          </p>
-
-          <h3>Metadata</h3>
-
-          {getTagValue(osmDetails.tags, "name") && (
-            <p>
-              <strong>Name:</strong> {getTagValue(osmDetails.tags, "name")}
+        <div className="space-y-6">
+          <div className="bg-gray-50 p-4">
+            <h2 className="text-xl font-semibold mb-3">OSM Information</h2>
+            <p className="text-gray-700">
+              <strong>OSM ID:</strong> {osmDetails.type}/{osmDetails.id}
             </p>
-          )}
+          </div>
 
-          {getTagValue(osmDetails.tags, "phone") && (
-            <p>
-              <strong>Phone:</strong> {getTagValue(osmDetails.tags, "phone")}
-            </p>
-          )}
+          <div className="bg-white border border-gray-200 p-4">
+            <h3 className="text-lg font-semibold mb-4">Metadata</h3>
 
-          {getTagValue(osmDetails.tags, "website") && (
-            <p>
-              <strong>Website:</strong>{" "}
-              {getTagValue(osmDetails.tags, "website")}
-            </p>
-          )}
+            <div className="grid gap-3">
+              {getTagValue(osmDetails.tags, "name") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Name:</span>
+                  <span>{getTagValue(osmDetails.tags, "name")}</span>
+                </div>
+              )}
 
-          {getTagValue(osmDetails.tags, "opening_hours") && (
-            <p>
-              <strong>Opening Hours:</strong>{" "}
-              {getTagValue(osmDetails.tags, "opening_hours")}
-            </p>
-          )}
+              {getTagValue(osmDetails.tags, "phone") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Phone:</span>
+                  <span>{getTagValue(osmDetails.tags, "phone")}</span>
+                </div>
+              )}
 
-          {getTagValue(osmDetails.tags, "wikidata") && (
-            <p>
-              <strong>Wikidata ID:</strong>{" "}
-              {getTagValue(osmDetails.tags, "wikidata")}
-            </p>
-          )}
+              {getTagValue(osmDetails.tags, "website") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Website:</span>
+                  <a
+                    href={getTagValue(osmDetails.tags, "website") || undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {getTagValue(osmDetails.tags, "website")}
+                  </a>
+                </div>
+              )}
 
-          {getTagValue(osmDetails.tags, "wikipedia") && (
-            <p>
-              <strong>Wikipedia:</strong>{" "}
-              {getTagValue(osmDetails.tags, "wikipedia")}
-            </p>
-          )}
+              {getTagValue(osmDetails.tags, "opening_hours") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Opening Hours:</span>
+                  <span>{getTagValue(osmDetails.tags, "opening_hours")}</span>
+                </div>
+              )}
 
-          {getTagValue(osmDetails.tags, "description") && (
-            <p>
-              <strong>Description:</strong>{" "}
-              {getTagValue(osmDetails.tags, "description")}
-            </p>
-          )}
+              {getTagValue(osmDetails.tags, "wikidata") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Wikidata ID:</span>
+                  <span className="font-mono bg-gray-100 px-2 py-1">
+                    {getTagValue(osmDetails.tags, "wikidata")}
+                  </span>
+                </div>
+              )}
 
-          {getTagValue(osmDetails.tags, "addr:street") && (
-            <p>
-              <strong>Address:</strong>{" "}
-              {getTagValue(osmDetails.tags, "addr:street")}
-              {getTagValue(osmDetails.tags, "addr:housenumber") &&
-                ` ${getTagValue(osmDetails.tags, "addr:housenumber")}`}
-              {getTagValue(osmDetails.tags, "addr:postcode") &&
-                `, ${getTagValue(osmDetails.tags, "addr:postcode")}`}
-              {getTagValue(osmDetails.tags, "addr:city") &&
-                ` ${getTagValue(osmDetails.tags, "addr:city")}`}
-            </p>
-          )}
+              {getTagValue(osmDetails.tags, "wikipedia") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Wikipedia:</span>
+                  <span>{getTagValue(osmDetails.tags, "wikipedia")}</span>
+                </div>
+              )}
 
-          {/* Show all tags for debugging */}
-          <details>
-            <summary>All OSM Tags (Debug)</summary>
-            <pre>{JSON.stringify(osmDetails.tags, null, 2)}</pre>
-          </details>
+              {getTagValue(osmDetails.tags, "description") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Description:</span>
+                  <span>{getTagValue(osmDetails.tags, "description")}</span>
+                </div>
+              )}
+
+              {getTagValue(osmDetails.tags, "addr:street") && (
+                <div className="flex">
+                  <span className="font-medium w-32">Address:</span>
+                  <span>
+                    {getTagValue(osmDetails.tags, "addr:street")}
+                    {getTagValue(osmDetails.tags, "addr:housenumber") &&
+                      ` ${getTagValue(osmDetails.tags, "addr:housenumber")}`}
+                    {getTagValue(osmDetails.tags, "addr:postcode") &&
+                      `, ${getTagValue(osmDetails.tags, "addr:postcode")}`}
+                    {getTagValue(osmDetails.tags, "addr:city") &&
+                      ` ${getTagValue(osmDetails.tags, "addr:city")}`}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
