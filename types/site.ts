@@ -25,8 +25,6 @@ export type OSMTag = {
 export type OSMElement = {
   type: "node" | "way" | "relation";
   id: number;
-  lat?: number;
-  lon?: number;
   tags?: OSMTag[]; // metadata
 };
 
