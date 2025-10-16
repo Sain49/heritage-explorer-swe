@@ -131,10 +131,9 @@ export default function SiteExplorer() {
 
               <Link
                 href={`/site-details?osmId=${site.osmId}&osmType=${site.osmType}`}
+                className="inline-block px-3 py-1 bg-green-400 text-white text-sm hover:bg-green-600"
               >
-                <button className="px-3 py-1 bg-green-400 text-white text-sm hover:bg-green-600">
-                  View Details
-                </button>
+                View Details
               </Link>
             </div>
           ))}
