@@ -1,4 +1,4 @@
-import type { OSMResponse, OSMElement, OSMTag } from "@/types/site";
+import type { OSMElement, OSMTag } from "@/types/site";
 
 const OSM_BASE_URL = "https://www.openstreetmap.org/api/0.6";
 
