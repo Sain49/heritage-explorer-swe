@@ -66,8 +66,8 @@ export type WikidataResponse = {
 // WikiMedias commons Api types
 // image info
 export type WikidataImageData = {
-  imageUrl: string | null; // The full URL to the image
-  description: string | null; // A short description from Wikidata
+  imageUrl: string | null;
+  description: string | null;
 };
 
 // Wikimedia commons api response
