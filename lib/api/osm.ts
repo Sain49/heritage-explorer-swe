@@ -1,4 +1,10 @@
-import type { OSMElement, OSMTag } from "@/types/site";
+import type {
+  OSMElement,
+  OSMNode,
+  OSMWay,
+  OSMRelation,
+  OSMTag,
+} from "@/types/site";
 import { XMLParser } from "fast-xml-parser";
 
 const OSM_BASE_URL = "https://www.openstreetmap.org/api/0.6";
@@ -72,11 +78,27 @@ function parseOSMXml(
       }));
     }
 
-    return {
+    // Build the element based on type
+    const baseElement = {
       type: expectedType,
       id: expectedId,
       tags,
     };
+
+    if (expectedType === "node") {
+      const lat = parseFloat(element["@_lat"]);
+      const lon = parseFloat(element["@_lon"]);
+      if (isNaN(lat) || isNaN(lon)) {
+        return null; // Invalid coordinates
+      }
+      return {
+        ...baseElement,
+        lat,
+        lon,
+      } as OSMNode;
+    }
+
+    return baseElement as OSMWay | OSMRelation;
   } catch (error) {
     console.error("XML parsing failed:", error);
     return null;
