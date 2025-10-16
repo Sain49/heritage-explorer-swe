@@ -1,6 +1,14 @@
 import type { OSMElement, OSMTag } from "@/types/site";
+import { XMLParser } from "fast-xml-parser";
 
 const OSM_BASE_URL = "https://www.openstreetmap.org/api/0.6";
+
+const parser = new XMLParser({ ignoreAttributes: false });
+
+type ParsedTag = {
+  "@_k": string;
+  "@_v": string;
+};
 
 // fetch OSM element details by Id and type
 export async function fetchOSMDetails(
@@ -38,37 +46,41 @@ function parseOSMXml(
   expectedType: "node" | "way" | "relation",
   expectedId: number
 ): OSMElement | null {
-  // look for the element and its tags
-  const elementRegex = new RegExp(
-    `<${expectedType} id="${expectedId}"([^>]*)>(.*?)</${expectedType}>`,
-    "s"
-  );
-  const elementMatch = xmlText.match(elementRegex);
+  try {
+    const parsed = parser.parse(xmlText);
 
-  if (!elementMatch) {
+    // Access the element under osm[expectedType]
+    const element = parsed.osm?.[expectedType];
+
+    if (!element) {
+      return null;
+    }
+
+    // Check if the id matches
+    const elementId = element["@_id"];
+    if (parseInt(elementId) !== expectedId) {
+      return null;
+    }
+
+    // Extract tags
+    let tags: OSMTag[] | undefined;
+    if (element.tag) {
+      const tagArray = Array.isArray(element.tag) ? element.tag : [element.tag];
+      tags = tagArray.map((tag: ParsedTag) => ({
+        k: tag["@_k"],
+        v: tag["@_v"],
+      }));
+    }
+
+    return {
+      type: expectedType,
+      id: expectedId,
+      tags,
+    };
+  } catch (error) {
+    console.error("XML parsing failed:", error);
     return null;
   }
-
-  // extract tags from the element content
-  const elementContent = elementMatch[2];
-  const tags: OSMTag[] = [];
-
-  // Find all <tag k="..." v="..."> elements
-  const tagRegex = /<tag k="([^"]+)" v="([^"]*)"\/?>/g;
-  let tagMatch;
-
-  while ((tagMatch = tagRegex.exec(elementContent)) !== null) {
-    tags.push({
-      k: tagMatch[1],
-      v: tagMatch[2],
-    });
-  }
-
-  return {
-    type: expectedType,
-    id: expectedId,
-    tags: tags.length > 0 ? tags : undefined,
-  };
 }
 
 // Helper function to extract specific tag values
