@@ -52,9 +52,8 @@ export type OSMResponse = {
 // WIKIDATA SPARQL Api types
 // a single result
 export type WikidataBinding = {
-  type: string;
-  value: string;
-  dataType?: string;
+  image?: { type: string; value: string };
+  description?: { type: string; value: string };
 };
 
 // sparql response
