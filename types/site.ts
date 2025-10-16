@@ -22,13 +22,27 @@ export type OSMTag = {
 };
 
 // OSM element (node/way/relation)
-export type OSMElement = {
-  type: "node" | "way" | "relation";
+export type OSMNode = {
+  type: "node";
   id: number;
-  lat?: number;
-  lon?: number;
-  tags?: OSMTag[]; // metadata
+  lat: number;
+  lon: number;
+  tags?: OSMTag[];
 };
+
+export type OSMWay = {
+  type: "way";
+  id: number;
+  tags?: OSMTag[];
+};
+
+export type OSMRelation = {
+  type: "relation";
+  id: number;
+  tags?: OSMTag[];
+};
+
+export type OSMElement = OSMNode | OSMWay | OSMRelation;
 
 // The full OSM XML Api response
 export type OSMResponse = {

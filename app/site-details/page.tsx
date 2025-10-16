@@ -1,7 +1,10 @@
+import { Suspense } from "react";
+import SiteDetailsContent from "./site-details-content";
+
 export default function SiteDetails() {
   return (
-    <div>
-      <h1>Site Details</h1>
-    </div>
+    <Suspense fallback={<div>Loading site details...</div>}>
+      <SiteDetailsContent />
+    </Suspense>
   );
 }
