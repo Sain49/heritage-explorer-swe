@@ -52,27 +52,22 @@ export type OSMResponse = {
 // WIKIDATA SPARQL Api types
 // a single result
 export type WikidataBinding = {
-  type: string;
-  value: string;
-  dataType?: string;
+  image?: { type: string; value: string };
+  description?: { type: string; value: string };
 };
 
 // sparql response
 export type WikidataResponse = {
   results: {
-    bindings: {
-      [key: string]: WikidataBinding;
-    }[];
+    bindings: WikidataBinding[]; // array of results from the query
   };
 };
 
 // WikiMedias commons Api types
 // image info
-export type WikimediaImageInfo = {
-  url: string;
-  descriptionurl: string;
-  width: number;
-  height: number;
+export type WikidataImageData = {
+  imageUrl: string | null;
+  description: string | null;
 };
 
 // Wikimedia commons api response
@@ -80,7 +75,7 @@ export type WikimediaResponse = {
   query?: {
     pages?: {
       [key: string]: {
-        imageinfo?: WikimediaImageInfo[];
+        imageinfo?: WikidataImageData[];
       };
     };
   };

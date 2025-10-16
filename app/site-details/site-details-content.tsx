@@ -6,12 +6,18 @@ import Link from "next/link";
 
 import type { OSMElement } from "@/types/site";
 import { fetchOSMDetails, getTagValue } from "@/lib/api/osm";
+import { fetchWikidataImage } from "@/lib/api/wikidata";
+import { WikidataImageData } from "@/types/site";
 
 export default function SiteDetails() {
   const searchParams = useSearchParams();
   const [osmDetails, setOsmDetails] = useState<OSMElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [wikidataData, setWikidataData] = useState<WikidataImageData | null>(
+    null
+  );
 
   // Get parameters from URL
   const osmId = searchParams.get("osmId");
@@ -38,6 +44,13 @@ export default function SiteDetails() {
     try {
       const details = await fetchOSMDetails(id, type);
       setOsmDetails(details);
+
+      // fetch Wikidata data if we have a Wikidata Id
+      if (details && getTagValue(details.tags, "wikidata")) {
+        const wikidataId = getTagValue(details.tags, "wikidata");
+        const imageData = await fetchWikidataImage(wikidataId!);
+        setWikidataData(imageData);
+      }
     } catch (error) {
       console.error("Failed to load site details:", error);
       setError("Failed to load site details. Please try again.");
@@ -82,16 +95,7 @@ export default function SiteDetails() {
 
       {osmDetails && (
         <div className="space-y-6">
-          <div className="bg-gray-50 p-4">
-            <h2 className="text-xl font-semibold mb-3">OSM Information</h2>
-            <p className="text-gray-700">
-              <strong>OSM ID:</strong> {osmDetails.type}/{osmDetails.id}
-            </p>
-          </div>
-
           <div className="bg-white border border-gray-200 p-4">
-            <h3 className="text-lg font-semibold mb-4">Metadata</h3>
-
             <div className="grid gap-3">
               {getTagValue(osmDetails.tags, "name") && (
                 <div className="flex">
@@ -163,6 +167,18 @@ export default function SiteDetails() {
                     {getTagValue(osmDetails.tags, "addr:city") &&
                       ` ${getTagValue(osmDetails.tags, "addr:city")}`}
                   </span>
+                </div>
+              )}
+
+              {wikidataData && (
+                <div>
+                  <h2>Image and description from Wikidata</h2>
+                  {wikidataData.imageUrl && (
+                    <img src={wikidataData.imageUrl} alt="Site image" />
+                  )}
+                  {wikidataData.description && (
+                    <p>{wikidataData.description}</p>
+                  )}
                 </div>
               )}
             </div>
