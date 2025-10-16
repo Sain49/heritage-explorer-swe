@@ -60,19 +60,15 @@ export type WikidataBinding = {
 // sparql response
 export type WikidataResponse = {
   results: {
-    bindings: {
-      [key: string]: WikidataBinding;
-    }[];
+    bindings: WikidataBinding[]; // array of results from the query
   };
 };
 
 // WikiMedias commons Api types
 // image info
-export type WikimediaImageInfo = {
-  url: string;
-  descriptionurl: string;
-  width: number;
-  height: number;
+export type WikidataImageData = {
+  imageUrl: string | null; // The full URL to the image
+  description: string | null; // A short description from Wikidata
 };
 
 // Wikimedia commons api response
@@ -80,7 +76,7 @@ export type WikimediaResponse = {
   query?: {
     pages?: {
       [key: string]: {
-        imageinfo?: WikimediaImageInfo[];
+        imageinfo?: WikidataImageData[];
       };
     };
   };
