@@ -9,14 +9,7 @@ export default function Footer() {
             © 2025 Heritage Explorer. All rights reserved.
           </div>
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 text-sm">
-            <Link
-              href="https://docs.visitsweden.com/en/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Data sourced from Nominatim, OpenStreetMap, Wikidata
-            </Link>
+            <p>Data sourced from Nominatim, OpenStreetMap, Wikidata</p>
             <Link
               href="/contact-us"
               className="text-gray-600 hover:text-blue-600 transition-colors"
