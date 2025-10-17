@@ -67,7 +67,7 @@ export default function SiteDetails() {
         <p className="text-red-600">
           Error: Missing site information. Please go back and select a site.
         </p>
-        <Link href="/site-explorer">
+        <Link href="/">
           <button className="mt-4 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600">
             Back to Explorer
           </button>
@@ -79,7 +79,7 @@ export default function SiteDetails() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="mb-6">
-        <Link href="/site-explorer">
+        <Link href="/">
           <button className="mb-4 px-4 py-2 bg-gray-400 text-white hover:bg-gray-600">
             ← Back to Explorer
           </button>
@@ -132,21 +132,21 @@ export default function SiteDetails() {
                 </div>
               )}
 
-              {getTagValue(osmDetails.tags, "wikidata") && (
+              {/* {getTagValue(osmDetails.tags, "wikidata") && (
                 <div className="flex">
                   <span className="font-medium w-32">Wikidata ID:</span>
                   <span className="font-mono bg-gray-100 px-2 py-1">
                     {getTagValue(osmDetails.tags, "wikidata")}
                   </span>
                 </div>
-              )}
+              )} */}
 
-              {getTagValue(osmDetails.tags, "wikipedia") && (
+              {/* {getTagValue(osmDetails.tags, "wikipedia") && (
                 <div className="flex">
                   <span className="font-medium w-32">Wikipedia:</span>
                   <span>{getTagValue(osmDetails.tags, "wikipedia")}</span>
                 </div>
-              )}
+              )} */}
 
               {getTagValue(osmDetails.tags, "description") && (
                 <div className="flex">

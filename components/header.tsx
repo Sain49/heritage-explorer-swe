@@ -14,10 +14,10 @@ export default function Header() {
             <ul className="flex space-x-8">
               <li>
                 <Link
-                  href="/site-explorer"
+                  href="/"
                   className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
                 >
-                  Explore Sites
+                  Home
                 </Link>
               </li>
               <li>
