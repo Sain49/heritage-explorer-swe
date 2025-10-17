@@ -1,16 +1,40 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 import type { NominatimResult } from "@/types/site";
 import { searchByName, searchByCategory } from "@/lib/api/nominatim";
-import Link from "next/link";
+import type { FeaturedMuseum } from "@/types/featured-museums";
+import { FEATURED_MUSEUMS } from "@/data/featured-museums";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sites, setSites] = useState<NominatimResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleFeaturedMuseumClick = async (museumName: string) => {
+    setSearchQuery(museumName);
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const results = await searchByName(museumName);
+      setSites(results);
+    } catch (error) {
+      console.error("Search failed: ", error);
+      setSites([]);
+      setError(
+        error instanceof Error && error.message.includes("504")
+          ? "Search timed out. Try a more specific search or different category."
+          : "Search failed. Please try again."
+      );
+    }
+
+    setIsLoading(false);
+  };
 
   const handleSearch = async () => {
     // don't search
@@ -61,16 +85,36 @@ export default function Home() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Heritage Site Explorer</h1>
+      <h1 className="text-2xl font-bold mb-6 mt-6">
+        Welcome to Heritage Explorer Sweden!
+      </h1>
+
+      {/* featured museums */}
+      <div className="mb-7">
+        <h2 className="text-xl font-semibold mb-4">
+          Featured Museums in Stockholm
+        </h2>
+
+        <div className="grid grid-cols-2 gap-3">
+          {FEATURED_MUSEUMS.map((museum) => (
+            <div key={museum.id}>
+              <button
+                onClick={() => handleFeaturedMuseumClick(museum.name)}
+                className="text-blue-500 hover:text-blue-800 text-left font-semibold"
+              >
+                {museum.name}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Search form */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4">Search heritage sites</h2>
-
         {/* search input */}
         <div className="mb-4">
-          <label htmlFor="search" className="block text-sm font-medium mb-2">
-            Search:
+          <label htmlFor="search" className="block text-lg font-medium mb-2">
+            Search heritage sites:
           </label>
           <input
             id="search"
