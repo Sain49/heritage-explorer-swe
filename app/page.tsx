@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import type { NominatimResult } from "@/types/site";
 import { searchByName, searchByCategory } from "@/lib/api/nominatim";
-import type { FeaturedMuseum } from "@/types/featured-museums";
 import { FEATURED_MUSEUMS } from "@/data/featured-museums";
 
 export default function Home() {
@@ -150,11 +149,11 @@ export default function Home() {
         </button>
       </div>
 
-      {/* result section */}
+      {/* search result */}
       <div>
-        {sites.length > 0 && (
+        {/* {sites.length > 0 && (
           <p className="mb-4 text-gray-600">Found {sites.length} sites</p>
-        )}
+        )} */}
 
         {isLoading && <p className="text-blue-600">Loading...</p>}
 
