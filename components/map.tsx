@@ -10,20 +10,6 @@ export default function Map() {
   const [mapError, setMapError] = useState<string | null>(null);
 
   const center: [number, number] = [59.3293, 18.0686];
-  if (
-    !Array.isArray(center) ||
-    center.length !== 2 ||
-    typeof center[0] !== "number" ||
-    typeof center[1] !== "number"
-  ) {
-    return (
-      <div className="h-96 w-full flex items-center justify-center border border-gray-300">
-        <p className="text-gray-700">
-          Invalid map coordinates. Cannot display map.
-        </p>
-      </div>
-    );
-  }
 
   if (mapError) {
     return (
