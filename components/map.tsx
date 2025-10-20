@@ -4,7 +4,6 @@ import { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Minimalist map component with loading and validation
 export default function Map() {
   const [isLoading, setIsLoading] = useState(true);
   const [mapError, setMapError] = useState<string | null>(null);
