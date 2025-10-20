@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { NominatimResult } from "@/types/site";
 import { searchByName, searchByCategory } from "@/lib/api/nominatim";
 import { FEATURED_MUSEUMS } from "@/data/featured-museums";
+import Map from "@/components/map"; // New import for the map
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -149,44 +150,51 @@ export default function Home() {
         </button>
       </div>
 
-      {/* search result */}
-      <div>
-        {/* {sites.length > 0 && (
-          <p className="mb-4 text-gray-600">Found {sites.length} sites</p>
-        )} */}
-
-        {isLoading && <p className="text-blue-600">Loading...</p>}
-
-        {error && <p className="text-red-600 mb-4">{error}</p>}
-
-        <div className="grid gap-4">
-          {sites.map((site) => (
-            <div key={site.osmId} className="border border-gray-200 p-4">
-              <h3 className="text-lg font-semibold mb-2">{site.name}</h3>
-              <p className="text-gray-600 mb-1">
-                <strong>Coordinates:</strong> {site.latitude}, {site.longitude}
-              </p>
-              <p className="text-gray-500 text-sm mb-3">
-                <em>
-                  OSM: {site.osmType}/{site.osmId}
-                </em>
-              </p>
-
-              <Link
-                href={`/site-details?osmId=${site.osmId}&osmType=${site.osmType}`}
-                className="inline-block px-3 py-1 bg-green-400 text-white text-sm hover:bg-green-600"
-              >
-                View Details
-              </Link>
-            </div>
-          ))}
+      {/* Two-column layout: Map on left, search results on right */}
+      <div style={{ display: "flex", gap: "20px" }}>
+        <div style={{ flex: 1 }}>
+          {/* Left column for map */}
+          <Map /> {/* The map component */}
         </div>
+        <div style={{ flex: 1 }}>
+          {/* Right column for search results */}
+          {/* search result */}
+          <div>
+            {isLoading && <p className="text-blue-600">Loading...</p>}
 
-        {!isLoading && sites.length === 0 && searchQuery && (
-          <p className="text-gray-500">
-            No sites found. Try a different search!
-          </p>
-        )}
+            {error && <p className="text-red-600 mb-4">{error}</p>}
+
+            <div className="grid gap-4">
+              {sites.map((site) => (
+                <div key={site.osmId} className="border border-gray-200 p-4">
+                  <h3 className="text-lg font-semibold mb-2">{site.name}</h3>
+                  <p className="text-gray-600 mb-1">
+                    <strong>Coordinates:</strong> {site.latitude},{" "}
+                    {site.longitude}
+                  </p>
+                  <p className="text-gray-500 text-sm mb-3">
+                    <em>
+                      OSM: {site.osmType}/{site.osmId}
+                    </em>
+                  </p>
+
+                  <Link
+                    href={`/site-details?osmId=${site.osmId}&osmType=${site.osmType}`}
+                    className="inline-block px-3 py-1 bg-green-400 text-white text-sm hover:bg-green-600"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              ))}
+            </div>
+
+            {!isLoading && sites.length === 0 && searchQuery && (
+              <p className="text-gray-500">
+                No sites found. Try a different search!
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
