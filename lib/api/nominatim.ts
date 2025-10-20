@@ -207,9 +207,9 @@ function isHeritageSite(result: NominatimResult): boolean {
     "landmark",
   ];
 
-  // reject generic/useless types
+  // reject useless types
   const invalidTypes = [
-    "yes", // Generic marker
+    "yes",
     "house",
     "residential",
     "apartments",
