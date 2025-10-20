@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import type { NominatimResult } from "@/types/site";
 import { searchByName, searchByCategory } from "@/lib/api/nominatim";
 import { FEATURED_MUSEUMS } from "@/data/featured-museums";
-import Map from "@/components/map";
 import MapErrorBoundary from "@/components/map-error-boundary";
+
+// dynamically import Map to avoid SSR issues with Leaflet
+const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
