@@ -43,7 +43,7 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
   const params = new URLSearchParams({
     format: "json",
     q: query,
-    limit: "20",
+    limit: "10",
     addressdetails: "1",
     countrycodes: "se",
   });
@@ -121,7 +121,7 @@ export async function searchByCategory(
       way["${tag.key}"="${tag.value}"](area);
       relation["${tag.key}"="${tag.value}"](area);
     );
-    out center 20;
+    out center 10;
   `;
 
   console.log(`Overpass query for ${category}:`, query.trim());
@@ -207,9 +207,9 @@ function isHeritageSite(result: NominatimResult): boolean {
     "landmark",
   ];
 
-  // reject generic/useless types
+  // reject useless types
   const invalidTypes = [
-    "yes", // Generic marker
+    "yes",
     "house",
     "residential",
     "apartments",

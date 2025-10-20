@@ -78,7 +78,7 @@ function parseOSMXml(
       }));
     }
 
-    // Build the element based on type
+    // build the element based on type
     const baseElement = {
       type: expectedType,
       id: expectedId,
@@ -89,7 +89,7 @@ function parseOSMXml(
       const lat = parseFloat(element["@_lat"]);
       const lon = parseFloat(element["@_lon"]);
       if (isNaN(lat) || isNaN(lon)) {
-        return null; // Invalid coordinates
+        return null; // invalid coordinates
       }
       return {
         ...baseElement,
