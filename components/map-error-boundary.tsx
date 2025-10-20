@@ -1,6 +1,6 @@
 import React from "react";
 
-// error boundry class component
+// error boundary class component
 class MapErrorBoundary extends React.Component<
   { children: React.ReactNode }, // Props: just the children (map component)
   { hasError: boolean } // State: tracks if an error happened
@@ -17,8 +17,8 @@ class MapErrorBoundary extends React.Component<
   }
 
   // This method logs the error (optional, for debugging)
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Map error:", error, errorInfo); // log to console for debugging
+  componentDidCatch(_error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Map error:", _error, errorInfo); // log to console for debugging
   }
 
   render() {
