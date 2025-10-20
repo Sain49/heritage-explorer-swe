@@ -6,7 +6,8 @@ import Link from "next/link";
 import type { NominatimResult } from "@/types/site";
 import { searchByName, searchByCategory } from "@/lib/api/nominatim";
 import { FEATURED_MUSEUMS } from "@/data/featured-museums";
-import Map from "@/components/map"; // New import for the map
+import Map from "@/components/map";
+import MapErrorBoundary from "@/components/map-error-boundary";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -100,7 +101,7 @@ export default function Home() {
             <div key={museum.id}>
               <button
                 onClick={() => handleFeaturedMuseumClick(museum.name)}
-                className="text-blue-500 hover:text-blue-800 text-left font-semibold"
+                className="text-blue-600 hover:text-blue-800 text-left focus:outline-none focus:underline"
               >
                 {museum.name}
               </button>
@@ -113,7 +114,7 @@ export default function Home() {
       <div className="mb-6">
         {/* search input */}
         <div className="mb-4">
-          <label htmlFor="search" className="block text-lg font-medium mb-2">
+          <label htmlFor="search" className="block text-lg mb-2">
             Search heritage sites:
           </label>
           <input
@@ -127,7 +128,7 @@ export default function Home() {
                 handleSearch();
               }
             }}
-            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
           />
         </div>
       </div>
@@ -137,50 +138,54 @@ export default function Home() {
         <button
           onClick={handleSearch}
           disabled={isLoading}
-          className="px-4 py-2 bg-blue-400 text-white hover:bg-blue-600 disabled:bg-gray-400"
+          className="px-4 py-2 border border-blue-300 bg-blue-300 hover:bg-blue-400 focus:outline-none focus:border-blue-400 disabled:opacity-80"
         >
           {isLoading ? "Searching..." : "Search"}
         </button>
 
         <button
           onClick={handleReset}
-          className="px-4 py-2 bg-gray-400 text-white hover:bg-gray-600"
+          className="px-4 py-2 border border-gray-300 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:border-gray-500"
         >
           Reset
         </button>
       </div>
 
-      {/* Two-column layout: Map on left, search results on right */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        <div style={{ flex: 1 }}>
-          {/* Left column for map */}
-          <Map /> {/* The map component */}
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex-1">
+          {/* left column: map */}
+          <MapErrorBoundary>
+            <Map />
+          </MapErrorBoundary>
         </div>
-        <div style={{ flex: 1 }}>
-          {/* Right column for search results */}
+        <div className="flex-1 space-y-4">
+          {/* right column results*/}
           {/* search result */}
           <div>
-            {isLoading && <p className="text-blue-600">Loading...</p>}
+            {isLoading && <p className="text-gray-700">Loading...</p>}
 
-            {error && <p className="text-red-600 mb-4">{error}</p>}
+            {error && (
+              <div className="p-4 border border-gray-300">
+                <p className="text-gray-700">{error}</p>
+              </div>
+            )}
 
             <div className="grid gap-4">
               {sites.map((site) => (
-                <div key={site.osmId} className="border border-gray-200 p-4">
-                  <h3 className="text-lg font-semibold mb-2">{site.name}</h3>
+                <div key={site.osmId} className="border border-gray-300 p-4">
+                  <h3 className="text-lg mb-2 text-gray-900">{site.name}</h3>
                   <p className="text-gray-600 mb-1">
-                    <strong>Coordinates:</strong> {site.latitude},{" "}
-                    {site.longitude}
+                    <strong className="text-gray-800">Coordinates:</strong>{" "}
+                    {site.latitude}, {site.longitude}
                   </p>
                   <p className="text-gray-500 text-sm mb-3">
-                    <em>
-                      OSM: {site.osmType}/{site.osmId}
-                    </em>
+                    OSM: {site.osmType}/{site.osmId}
                   </p>
 
                   <Link
                     href={`/site-details?osmId=${site.osmId}&osmType=${site.osmType}`}
-                    className="inline-block px-3 py-1 bg-green-400 text-white text-sm hover:bg-green-600"
+                    className="text-blue-600 hover:text-blue-800 focus:outline-none focus:underline"
+                    aria-label={`View details for ${site.name}`}
                   >
                     View Details
                   </Link>
@@ -189,9 +194,11 @@ export default function Home() {
             </div>
 
             {!isLoading && sites.length === 0 && searchQuery && (
-              <p className="text-gray-500">
-                No sites found. Try a different search!
-              </p>
+              <div className="p-4 border border-gray-300">
+                <p className="text-gray-700">
+                  No sites found. Try a different search!
+                </p>
+              </div>
             )}
           </div>
         </div>
