@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-export default function Map() {
+import type { NominatimResult } from "@/types/site";
+
+export default function Map({ sites }: { sites: NominatimResult[] }) {
   const [isLoading, setIsLoading] = useState(true);
   const [mapError, setMapError] = useState<string | null>(null);
 
@@ -43,6 +45,11 @@ export default function Map() {
               setMapError("Failed to load map tiles. Check your internet."),
           }}
         />
+        {sites.map((site) => (
+          <Marker key={site.osmId} position={[site.latitude, site.longitude]}>
+            <Popup>{site.name}</Popup>
+          </Marker>
+        ))}
       </MapContainer>
     </div>
   );
