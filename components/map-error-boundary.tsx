@@ -11,7 +11,7 @@ class MapErrorBoundary extends React.Component<
   }
 
   // This method runs when an error occurs in children
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError(_error: Error) {
     // Update state to show error
     return { hasError: true };
   }

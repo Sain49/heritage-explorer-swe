@@ -164,6 +164,101 @@ export async function searchByCategory(
   }
 }
 
+// Search for heritage sites within a bounding box
+export async function searchByBoundingBox(boundingBox: {
+  minLat: number;
+  maxLat: number;
+  minLon: number;
+  maxLon: number;
+}): Promise<NominatimResult[]> {
+  // Map categories to OSM tags (same as searchByCategory)
+  const tagMappings: TagMapping[] = [
+    { key: "tourism", value: "museum" },
+    { key: "historic", value: "castle" },
+    { key: "historic", value: "monument" },
+    { key: "amenity", value: "place_of_worship" },
+    { key: "historic", value: "ruins" },
+    { key: "historic", value: "archaeological_site" },
+  ];
+
+  // Build Overpass query for multiple heritage types within the bounding box
+  // bbox format: (south,west,north,east)
+  const bbox = `(${boundingBox.minLat},${boundingBox.minLon},${boundingBox.maxLat},${boundingBox.maxLon})`;
+
+  const queryParts: string[] = [];
+  for (const tag of tagMappings) {
+    queryParts.push(`node["${tag.key}"="${tag.value}"]${bbox};`);
+    queryParts.push(`way["${tag.key}"="${tag.value}"]${bbox};`);
+    queryParts.push(`relation["${tag.key}"="${tag.value}"]${bbox};`);
+  }
+
+  const query = `
+    [out:json][timeout:60];
+    (
+      ${queryParts.join("\n      ")}
+    );
+    out center 10;
+  `;
+
+  console.log(`Overpass query for bounding box:`, query.trim());
+
+  try {
+    const response = await fetch(OVERPASS_BASE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `data=${encodeURIComponent(query)}`,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Overpass API failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    const results: NominatimResult[] = data.elements
+      .filter(
+        (element: OverpassApiElement) =>
+          element.tags?.name && element.tags.name.trim() !== ""
+      )
+      .map((element: OverpassApiElement) => {
+        let resultClass = "unknown";
+        let resultType = "unknown";
+        if (element.tags) {
+          for (const tag of tagMappings) {
+            if (element.tags[tag.key] === tag.value) {
+              resultClass = tag.key;
+              resultType = tag.value;
+              break;
+            }
+          }
+        }
+        return {
+          osmId: element.id,
+          osmType: element.type,
+          name: element.tags!.name,
+          latitude: element.lat || element.center?.lat,
+          longitude: element.lon || element.center?.lon,
+          class: resultClass,
+          type: resultType,
+        };
+      });
+
+    // filter to only heritage sites
+    const heritageSites = results.filter(isHeritageSite);
+
+    console.log(`Found ${heritageSites.length} heritage sites in bounding box`);
+
+    await delay(1000);
+
+    return heritageSites;
+  } catch (error) {
+    console.error("Bounding box search failed:", error);
+    throw error;
+  }
+}
+
 // filters by class and type
 function isHeritageSite(result: NominatimResult): boolean {
   // List of relevant classes
