@@ -168,6 +168,8 @@ export default function Home() {
               <div key={location.name}>
                 <button
                   onClick={() => handleLocationSearch(location.boundingBox)}
+                  className="text-blue-600 hover:text-blue-800 text-left focus:outline-none focus:underline"
+                  aria-label={`Search for heritage sites in ${location.name}`}
                 >
                   {location.name}
                 </button>
