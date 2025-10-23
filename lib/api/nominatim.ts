@@ -185,7 +185,7 @@ export async function searchByBoundingBox(boundingBox: {
   // bbox format: (south,west,north,east)
   const bbox = `(${boundingBox.minLat},${boundingBox.minLon},${boundingBox.maxLat},${boundingBox.maxLon})`;
 
-  let queryParts: string[] = [];
+  const queryParts: string[] = [];
   for (const tag of tagMappings) {
     queryParts.push(`node["${tag.key}"="${tag.value}"]${bbox};`);
     queryParts.push(`way["${tag.key}"="${tag.value}"]${bbox};`);
@@ -232,7 +232,7 @@ export async function searchByBoundingBox(boundingBox: {
         type: element.tags ? Object.values(element.tags)[0] : "unknown",
       }));
 
-    // Filter to only heritage sites (using existing function)
+    // filter to only heritage sites
     const heritageSites = results.filter(isHeritageSite);
 
     console.log(`Found ${heritageSites.length} heritage sites in bounding box`);
