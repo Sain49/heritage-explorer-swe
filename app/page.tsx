@@ -1,16 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import type { NominatimResult } from "@/types/site";
-import { searchByName, searchByCategory } from "@/lib/api/nominatim";
+import {
+  searchByName,
+  searchByCategory,
+  searchByBoundingBox,
+} from "@/lib/api/nominatim";
 import { FEATURED_MUSEUMS } from "@/data/featured-museums";
 import MapErrorBoundary from "@/components/map-error-boundary";
+import Map from "@/components/map";
 
-// dynamically import Map to avoid SSR issues with Leaflet
-const Map = dynamic(() => import("@/components/map"), { ssr: false });
+// popular locations with their bounding boxes
+const POPULAR_LOCATIONS = [
+  {
+    name: "Stockholm",
+    boundingBox: { minLat: 59.2, maxLat: 59.5, minLon: 17.8, maxLon: 18.2 },
+  },
+  {
+    name: "Gotland",
+    boundingBox: { minLat: 56.9, maxLat: 58.0, minLon: 18.0, maxLon: 19.0 },
+  },
+  {
+    name: "Norrbotten",
+    boundingBox: { minLat: 65.0, maxLat: 69.0, minLon: 16.0, maxLon: 25.0 },
+  },
+  {
+    name: "Dalarna",
+    boundingBox: { minLat: 59.5, maxLat: 62.5, minLon: 12.0, maxLon: 16.0 },
+  },
+  {
+    name: "Västra Götaland",
+    boundingBox: { minLat: 57.0, maxLat: 59.0, minLon: 11.0, maxLon: 14.5 },
+  },
+];
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -87,29 +112,66 @@ export default function Home() {
     setError(null);
   };
 
+  const handleLocationSearch = async (boundingBox: {
+    minLat: number;
+    maxLat: number;
+    minLon: number;
+    maxLon: number;
+  }) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const results = await searchByBoundingBox(boundingBox);
+      setSites(results);
+    } catch (error) {
+      console.error("Location search failed:", error);
+      setSites([]);
+      // For now, just log the error (no error handling in Stage 1)
+    }
+
+    setIsLoading(false);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6 mt-6">
         Welcome to Heritage Explorer Sweden!
       </h1>
 
-      {/* featured museums */}
-      <div className="mb-7">
-        <h2 className="text-xl font-semibold mb-4">
-          Featured Museums in Stockholm
-        </h2>
+      {/* featured museums and popular locations */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-7">
+        <div>
+          <h2 className="text-xl font-semibold mb-4">
+            Featured Museums in Stockholm
+          </h2>
 
-        <div className="grid grid-cols-2 gap-3">
-          {FEATURED_MUSEUMS.map((museum) => (
-            <div key={museum.id}>
-              <button
-                onClick={() => handleFeaturedMuseumClick(museum.name)}
-                className="text-blue-600 hover:text-blue-800 text-left focus:outline-none focus:underline"
-              >
-                {museum.name}
-              </button>
-            </div>
-          ))}
+          <div className="grid grid-cols-2 gap-3">
+            {FEATURED_MUSEUMS.map((museum) => (
+              <div key={museum.id}>
+                <button
+                  onClick={() => handleFeaturedMuseumClick(museum.name)}
+                  className="text-blue-600 hover:text-blue-800 text-left focus:outline-none focus:underline"
+                >
+                  {museum.name}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Popular Locations</h2>
+          <div>
+            {POPULAR_LOCATIONS.map((location) => (
+              <div key={location.name}>
+                <button
+                  onClick={() => handleLocationSearch(location.boundingBox)}
+                >
+                  {location.name}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
