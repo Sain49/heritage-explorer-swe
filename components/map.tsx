@@ -7,8 +7,9 @@ import L from "leaflet";
 
 import type { NominatimResult } from "@/types/site";
 
-// Fix for default marker icons in Next.js
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+// default marker icons in Next.js
+delete (L.Icon.Default.prototype as unknown as { _getIconUrl: unknown })
+  ._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "/marker-icon-2x.png",
   iconUrl: "/marker-icon.png",
