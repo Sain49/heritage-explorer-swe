@@ -81,29 +81,26 @@ export default function Map({ sites }: { sites: NominatimResult[] }) {
               setMapError("Failed to load map tiles. Check your internet."),
           }}
         />
-        {validSites.length > 0
-          ? validSites.map((site) => (
-              <Marker
-                key={site.osmId}
-                position={[site.latitude, site.longitude]}
-              >
-                <Popup>{site.name}</Popup>
-              </Marker>
-            ))
-          : sites.length > 0 && (
-              <div className="absolute top-4 left-4 bg-white px-4 py-3 rounded-lg shadow-md border border-gray-200 z-20 transition-all duration-200">
-                <div className="flex items-center space-x-2">
-                  <span className="text-amber-500">⚠️</span>
-                  <p className="text-sm text-gray-700 font-medium">
-                    No valid sites to display on map
-                  </p>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Try searching for a different location
-                </p>
-              </div>
-            )}
+        {validSites.length > 0 &&
+          validSites.map((site) => (
+            <Marker key={site.osmId} position={[site.latitude, site.longitude]}>
+              <Popup>{site.name}</Popup>
+            </Marker>
+          ))}
       </MapContainer>
+      {sites.length > 0 && validSites.length === 0 && (
+        <div className="absolute top-4 left-4 bg-white px-4 py-3 rounded-lg shadow-md border border-gray-200 z-20 transition-all duration-200">
+          <div className="flex items-center space-x-2">
+            <span className="text-amber-500">⚠️</span>
+            <p className="text-sm text-gray-700 font-medium">
+              No valid sites to display on map
+            </p>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Try searching for a different location
+          </p>
+        </div>
+      )}
     </div>
   );
 }
