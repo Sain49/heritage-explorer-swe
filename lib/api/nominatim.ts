@@ -222,15 +222,28 @@ export async function searchByBoundingBox(boundingBox: {
         (element: OverpassApiElement) =>
           element.tags?.name && element.tags.name.trim() !== ""
       )
-      .map((element: OverpassApiElement) => ({
-        osmId: element.id,
-        osmType: element.type,
-        name: element.tags!.name,
-        latitude: element.lat || element.center?.lat,
-        longitude: element.lon || element.center?.lon,
-        class: element.tags ? Object.keys(element.tags)[0] : "unknown", // Approximate class from tags
-        type: element.tags ? Object.values(element.tags)[0] : "unknown",
-      }));
+      .map((element: OverpassApiElement) => {
+        let resultClass = "unknown";
+        let resultType = "unknown";
+        if (element.tags) {
+          for (const tag of tagMappings) {
+            if (element.tags[tag.key] === tag.value) {
+              resultClass = tag.key;
+              resultType = tag.value;
+              break;
+            }
+          }
+        }
+        return {
+          osmId: element.id,
+          osmType: element.type,
+          name: element.tags!.name,
+          latitude: element.lat || element.center?.lat,
+          longitude: element.lon || element.center?.lon,
+          class: resultClass,
+          type: resultType,
+        };
+      });
 
     // filter to only heritage sites
     const heritageSites = results.filter(isHeritageSite);
