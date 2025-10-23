@@ -158,7 +158,7 @@ export default function Home() {
         <div className="flex-1">
           {/* left column: map */}
           <MapErrorBoundary>
-            <Map />
+            <Map sites={sites} />
           </MapErrorBoundary>
         </div>
         <div className="flex-1 space-y-4">
