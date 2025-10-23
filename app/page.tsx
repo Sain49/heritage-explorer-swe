@@ -11,7 +11,9 @@ import {
 } from "@/lib/api/nominatim";
 import { FEATURED_MUSEUMS } from "@/data/featured-museums";
 import MapErrorBoundary from "@/components/map-error-boundary";
-import Map from "@/components/map";
+
+import dynamic from "next/dynamic";
+const Map = dynamic(() => import("@/components/map"), { ssr: false });
 
 // popular locations with their bounding boxes
 const POPULAR_LOCATIONS = [
