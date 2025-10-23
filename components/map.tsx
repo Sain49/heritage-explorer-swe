@@ -7,7 +7,8 @@ import L from "leaflet";
 
 import type { NominatimResult } from "@/types/site";
 
-// default marker icons in Next.js
+// Fix for Leaflet default marker icons in Next.js: Leaflet's default icon path resolution
+// conflicts with Next.js's static asset handling, so we delete the default getter and set custom paths
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl: unknown })
   ._getIconUrl;
 L.Icon.Default.mergeOptions({
