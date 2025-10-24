@@ -44,6 +44,13 @@ export default function Home() {
   const [sites, setSites] = useState<NominatimResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(sites.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentSites = sites.slice(startIndex, endIndex);
 
   const handleFeaturedMuseumClick = async (museumName: string) => {
     setSearchQuery(museumName);
@@ -108,10 +115,27 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   const handleReset = () => {
     setSearchQuery("");
     setSites([]);
     setError(null);
+    setCurrentPage(1); // reset to first page
   };
 
   const handleLocationSearch = async (boundingBox: {
@@ -228,8 +252,7 @@ export default function Home() {
           </MapErrorBoundary>
         </div>
         <div className="flex-1 space-y-4">
-          {/* right column results*/}
-          {/* search result */}
+          {/* right column search results*/}
           <div>
             {isLoading && <p className="text-gray-700">Loading...</p>}
 
@@ -240,17 +263,9 @@ export default function Home() {
             )}
 
             <div className="grid gap-4">
-              {sites.map((site) => (
+              {currentSites.map((site) => (
                 <div key={site.osmId} className="border border-gray-300 p-4">
                   <h3 className="text-lg mb-2 text-gray-900">{site.name}</h3>
-                  <p className="text-gray-600 mb-1">
-                    <strong className="text-gray-800">Coordinates:</strong>{" "}
-                    {site.latitude}, {site.longitude}
-                  </p>
-                  <p className="text-gray-500 text-sm mb-3">
-                    OSM: {site.osmType}/{site.osmId}
-                  </p>
-
                   <Link
                     href={`/site-details?osmId=${site.osmId}&osmType=${site.osmType}`}
                     className="text-blue-600 hover:text-blue-800 focus:outline-none focus:underline"
@@ -270,6 +285,31 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          {/* pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-between items-center mt-4">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 border border-gray-300 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:border-gray-500 disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              <span className="text-gray-700">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 border border-gray-300 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:border-gray-500 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

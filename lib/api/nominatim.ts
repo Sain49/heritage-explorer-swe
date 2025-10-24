@@ -43,7 +43,7 @@ export async function searchByName(query: string): Promise<NominatimResult[]> {
   const params = new URLSearchParams({
     format: "json",
     q: query,
-    limit: "10",
+    limit: "50",
     addressdetails: "1",
     countrycodes: "se",
   });
@@ -112,7 +112,7 @@ export async function searchByCategory(
     throw new Error(`Unsupported category: ${category}`);
   }
 
-  // build Overpass query
+  // build Overpass query. out center is the limit of items
   query = `
     [out:json][timeout:60];
     area["ISO3166-1"="SE"];
@@ -121,7 +121,7 @@ export async function searchByCategory(
       way["${tag.key}"="${tag.value}"](area);
       relation["${tag.key}"="${tag.value}"](area);
     );
-    out center 10;
+    out center 50; 
   `;
 
   console.log(`Overpass query for ${category}:`, query.trim());
@@ -192,12 +192,13 @@ export async function searchByBoundingBox(boundingBox: {
     queryParts.push(`relation["${tag.key}"="${tag.value}"]${bbox};`);
   }
 
+  // out center is items limit
   const query = `
     [out:json][timeout:60];
     (
       ${queryParts.join("\n      ")}
     );
-    out center 10;
+    out center 50;
   `;
 
   console.log(`Overpass query for bounding box:`, query.trim());
