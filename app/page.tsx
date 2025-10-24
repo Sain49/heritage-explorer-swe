@@ -297,9 +297,9 @@ export default function Home() {
                 Previous
               </button>
 
-              <div className="text-gray-700">
+              <span className="text-gray-700">
                 Page {currentPage} of {totalPages}
-              </div>
+              </span>
 
               <button
                 onClick={handleNextPage}
