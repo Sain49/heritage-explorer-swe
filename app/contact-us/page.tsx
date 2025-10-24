@@ -7,9 +7,30 @@ export default function ContactUs() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    message?: string;
+  }>({});
+
+  const validateForm = () => {
+    const newErrors: typeof errors = {};
+
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    else if (!email.includes("@"))
+      newErrors.email = "Please enter a valid email";
+    if (!message.trim()) newErrors.message = "Message is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     setIsSubmitted(true);
     setName("");
     setEmail("");
@@ -35,6 +56,7 @@ export default function ContactUs() {
               onChange={(e) => setName(e.target.value)}
               required
             />
+            {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
           </div>
 
           <div>
@@ -46,6 +68,7 @@ export default function ContactUs() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+            {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
           </div>
 
           <div>
@@ -56,6 +79,7 @@ export default function ContactUs() {
               onChange={(e) => setMessage(e.target.value)}
               required
             />
+            {errors.message && <p style={{ color: "red" }}>{errors.message}</p>}
           </div>
 
           <button type="submit">Submit</button>
