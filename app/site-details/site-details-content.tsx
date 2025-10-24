@@ -132,22 +132,6 @@ export default function SiteDetails() {
                 </div>
               )}
 
-              {/* {getTagValue(osmDetails.tags, "wikidata") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Wikidata ID:</span>
-                  <span className="font-mono bg-gray-100 px-2 py-1">
-                    {getTagValue(osmDetails.tags, "wikidata")}
-                  </span>
-                </div>
-              )} */}
-
-              {/* {getTagValue(osmDetails.tags, "wikipedia") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Wikipedia:</span>
-                  <span>{getTagValue(osmDetails.tags, "wikipedia")}</span>
-                </div>
-              )} */}
-
               {getTagValue(osmDetails.tags, "description") && (
                 <div className="flex">
                   <span className="font-medium w-32">Description:</span>
@@ -172,7 +156,6 @@ export default function SiteDetails() {
 
               {wikidataData && (
                 <div>
-                  <h2>Image and description from Wikidata</h2>
                   {wikidataData.imageUrl && (
                     <img src={wikidataData.imageUrl} alt="Site image" />
                   )}
