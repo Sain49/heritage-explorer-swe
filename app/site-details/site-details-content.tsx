@@ -18,8 +18,9 @@ export default function SiteDetails() {
   const [wikidataData, setWikidataData] = useState<WikidataImageData | null>(
     null
   );
+  const [wikidataLoading, setWikidataLoading] = useState(false);
 
-  // Get parameters from URL
+  // Get parameters from url
   const osmId = searchParams.get("osmId");
   const osmType = searchParams.get("osmType") as
     | "node"
@@ -28,9 +29,17 @@ export default function SiteDetails() {
     | null;
 
   useEffect(() => {
-    // Only fetch if we have both parameters
+    // validate osmId is a valid positive number
     if (osmId && osmType) {
-      loadSiteDetails(parseInt(osmId), osmType);
+      const parsedId = parseInt(osmId);
+
+      // Check if it's a valid positive number
+      if (isNaN(parsedId) || parsedId <= 0) {
+        setError("Invalid site Id. Please select a valid site.");
+        return;
+      }
+
+      loadSiteDetails(parsedId, osmType);
     }
   }, [osmId, osmType]);
 
@@ -43,13 +52,34 @@ export default function SiteDetails() {
 
     try {
       const details = await fetchOSMDetails(id, type);
+
+      // if OSM returns null
+      if (!details) {
+        setError("Site details not found. The site may no longer exist.");
+        setIsLoading(false);
+        return;
+      }
+
       setOsmDetails(details);
 
-      // fetch Wikidata data if we have a Wikidata Id
-      if (details && getTagValue(details.tags, "wikidata")) {
+      // fetch Wikidata data with separate error handling
+      // if Wikidata fails we still show OSM data
+      if (getTagValue(details.tags, "wikidata")) {
         const wikidataId = getTagValue(details.tags, "wikidata");
-        const imageData = await fetchWikidataImage(wikidataId!);
-        setWikidataData(imageData);
+
+        // show loading state for Wikidata fetch
+        setWikidataLoading(true);
+
+        try {
+          const imageData = await fetchWikidataImage(wikidataId!);
+          setWikidataData(imageData);
+        } catch (wikidataError) {
+          // log error
+          console.error("Failed to load Wikidata information:", wikidataError);
+          // don't set the main error state, just skip Wikidata
+        } finally {
+          setWikidataLoading(false);
+        }
       }
     } catch (error) {
       console.error("Failed to load site details:", error);
@@ -59,7 +89,7 @@ export default function SiteDetails() {
     setIsLoading(false);
   };
 
-  // show error if missing parameters
+  // check for missing or invalid parameters
   if (!osmId || !osmType) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -152,6 +182,13 @@ export default function SiteDetails() {
                       ` ${getTagValue(osmDetails.tags, "addr:city")}`}
                   </span>
                 </div>
+              )}
+
+              {/* show loading state for Wikidata */}
+              {wikidataLoading && (
+                <p className="text-gray-500 text-sm">
+                  Loading additional information...
+                </p>
               )}
 
               {wikidataData && (
