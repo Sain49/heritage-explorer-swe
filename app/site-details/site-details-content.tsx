@@ -93,71 +93,89 @@ export default function SiteDetails() {
   if (!osmId || !osmType) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">Site Details</h1>
-        <p className="text-red-600">
-          Error: Missing site information. Please go back and select a site.
-        </p>
-        <Link href="/">
-          <button className="mt-4 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600">
-            Back to Explorer
-          </button>
-        </Link>
+        <h1 className="text-2xl font-bold mb-8 uppercase tracking-wide text-amber-900 border-b border-amber-900 pb-4">
+          Site Details
+        </h1>
+        <div className="p-6 border-2 border-red-800 bg-red-50">
+          <p className="text-red-900 font-medium mb-4">
+            Error: Missing site information. Please go back and select a site.
+          </p>
+          <Link href="/">
+            <button className="px-6 py-3 bg-amber-900 text-white hover:bg-amber-800 transition-colors uppercase tracking-wide text-sm border border-amber-900">
+              Back to Explorer
+            </button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="mb-6">
+      <div className="mb-8">
         <Link href="/">
-          <button className="mb-4 px-4 py-2 bg-gray-400 text-white hover:bg-gray-600">
+          <button className="mb-6 px-6 py-3 border border-stone-600 text-stone-800 hover:border-amber-900 hover:bg-amber-50 transition-colors uppercase tracking-wide text-sm">
             ← Back to Explorer
           </button>
         </Link>
-        <h1 className="text-2xl font-bold">Site Details</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-wide text-amber-900 border-b border-amber-900 pb-4">
+          Site Details
+        </h1>
       </div>
 
       {isLoading && (
-        <div className="space-y-6 animate-pulse">
-          <div className="h-8 bg-gray-200 w-3/4"></div>
-          <div className="h-64 bg-gray-200"></div>
+        <div className="space-y-6 animate-pulse border border-stone-400 p-6 bg-stone-50">
+          <div className="h-8 bg-stone-300 w-3/4"></div>
+          <div className="h-64 bg-stone-300"></div>
           <div className="space-y-3">
-            <div className="h-4 bg-gray-200"></div>
-            <div className="h-4 bg-gray-200 w-5/6"></div>
+            <div className="h-4 bg-stone-300"></div>
+            <div className="h-4 bg-stone-300 w-5/6"></div>
           </div>
         </div>
       )}
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      {error && (
+        <div className="p-6 border-2 border-red-800 bg-red-50 mb-6">
+          <p className="text-red-900 font-medium">{error}</p>
+        </div>
+      )}
 
       {osmDetails && (
         <div className="space-y-6">
-          <div className="bg-white border border-gray-200 p-4">
-            <div className="grid grid-cols-[minmax(auto,max-content)_1fr] gap-x-8 gap-y-3">
+          <div className="bg-white border border-stone-400 p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-[minmax(auto,max-content)_1fr] gap-x-8 gap-y-1 sm:gap-y-3 sm:items-baseline">
               {getTagValue(osmDetails.tags, "name") && (
                 <>
-                  <span className="font-medium whitespace-nowrap">Name:</span>
-                  <span>{getTagValue(osmDetails.tags, "name")}</span>
+                  <span className="font-medium whitespace-nowrap uppercase tracking-wide text-xs text-stone-700">
+                    Name:
+                  </span>
+                  <span className="text-stone-900 break-words mb-3 sm:mb-0">
+                    {getTagValue(osmDetails.tags, "name")}
+                  </span>
                 </>
               )}
 
               {getTagValue(osmDetails.tags, "phone") && (
                 <>
-                  <span className="font-medium whitespace-nowrap">Phone:</span>
-                  <span>{getTagValue(osmDetails.tags, "phone")}</span>
+                  <span className="font-medium whitespace-nowrap uppercase tracking-wide text-xs text-stone-700">
+                    Phone:
+                  </span>
+                  <span className="text-stone-900 break-words mb-3 sm:mb-0">
+                    {getTagValue(osmDetails.tags, "phone")}
+                  </span>
                 </>
               )}
 
               {getTagValue(osmDetails.tags, "website") && (
                 <>
-                  <span className="font-medium whitespace-nowrap">
+                  <span className="font-medium whitespace-nowrap uppercase tracking-wide text-xs text-stone-700">
                     Website:
                   </span>
                   <a
                     href={getTagValue(osmDetails.tags, "website") || undefined}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-amber-900 hover:text-amber-700 transition-colors underline break-words mb-3 sm:mb-0"
                   >
                     {getTagValue(osmDetails.tags, "website")}
                   </a>
@@ -166,28 +184,32 @@ export default function SiteDetails() {
 
               {getTagValue(osmDetails.tags, "opening_hours") && (
                 <>
-                  <span className="font-medium whitespace-nowrap">
+                  <span className="font-medium whitespace-nowrap uppercase tracking-wide text-xs text-stone-700">
                     Opening Hours:
                   </span>
-                  <span>{getTagValue(osmDetails.tags, "opening_hours")}</span>
+                  <span className="text-stone-900 break-words mb-3 sm:mb-0">
+                    {getTagValue(osmDetails.tags, "opening_hours")}
+                  </span>
                 </>
               )}
 
               {getTagValue(osmDetails.tags, "description") && (
                 <>
-                  <span className="font-medium whitespace-nowrap">
+                  <span className="font-medium whitespace-nowrap uppercase tracking-wide text-xs text-stone-700">
                     Description:
                   </span>
-                  <span>{getTagValue(osmDetails.tags, "description")}</span>
+                  <span className="text-stone-900 break-words mb-3 sm:mb-0">
+                    {getTagValue(osmDetails.tags, "description")}
+                  </span>
                 </>
               )}
 
               {getTagValue(osmDetails.tags, "addr:street") && (
                 <>
-                  <span className="font-medium whitespace-nowrap">
+                  <span className="font-medium whitespace-nowrap uppercase tracking-wide text-xs text-stone-700">
                     Address:
                   </span>
-                  <span>
+                  <span className="text-stone-900 break-words mb-3 sm:mb-0">
                     {getTagValue(osmDetails.tags, "addr:street")}
                     {getTagValue(osmDetails.tags, "addr:housenumber") &&
                       ` ${getTagValue(osmDetails.tags, "addr:housenumber")}`}
@@ -202,13 +224,13 @@ export default function SiteDetails() {
 
             {/* show loading state for Wikidata */}
             {wikidataLoading && (
-              <p className="text-gray-500 text-sm mt-4">
+              <p className="text-stone-600 text-sm mt-4 uppercase tracking-wide">
                 Loading additional information...
               </p>
             )}
 
             {wikidataData?.imageUrl && (
-              <div className="relative h-64 md:h-96 w-full overflow-hidden mt-4 border border-gray-200">
+              <div className="relative h-64 md:h-96 w-full overflow-hidden mt-6 border border-amber-900">
                 <img
                   src={wikidataData.imageUrl}
                   alt={getTagValue(osmDetails.tags, "name") || "Site image"}
