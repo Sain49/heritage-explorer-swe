@@ -6,31 +6,80 @@ const WIKIDATA_SPARQL_URL = "https://query.wikidata.org/sparql";
 export async function fetchWikidataImage(
   wikidataId: string
 ): Promise<WikidataImageData> {
-  // build the SPARQL query
-  const query = `
-    SELECT ?image ?description WHERE {
-      wd:${wikidataId} wdt:P18 ?image .
-      wd:${wikidataId} schema:description ?description .
-      FILTER(LANG(?description) = "en")
+  // STAGE 2: Validate the wikidataId parameter
+  // Check if it's empty or doesn't match Wikidata ID format (Q followed by numbers)
+  if (!wikidataId || !wikidataId.match(/^Q\d+$/)) {
+    console.error("Invalid Wikidata ID format:", wikidataId);
+    return {
+      imageUrl: null,
+      description: null,
+    };
+  }
+
+  try {
+    // build the SPARQL query
+    const query = `
+      SELECT ?image ?description WHERE {
+        wd:${wikidataId} wdt:P18 ?image .
+        wd:${wikidataId} schema:description ?description .
+        FILTER(LANG(?description) = "en")
+      }
+    `;
+
+    // full url plus the query
+    const url = `${WIKIDATA_SPARQL_URL}?query=${encodeURIComponent(
+      query
+    )}&format=json`;
+
+    const response = await fetch(url);
+
+    // Check if the response was successful
+    if (!response.ok) {
+      console.error(
+        `Wikidata API error: ${response.status} ${response.statusText}`
+      );
+      return {
+        imageUrl: null,
+        description: null,
+      };
     }
-  `;
 
-  // full url plus the query
-  const url = `${WIKIDATA_SPARQL_URL}?query=${encodeURIComponent(
-    query
-  )}&format=json`;
+    // handle Json parsing errors
+    let data: WikidataResponse;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      console.error("Failed to parse Wikidata response:", parseError);
+      return {
+        imageUrl: null,
+        description: null,
+      };
+    }
 
-  // Fetch the data
-  const response = await fetch(url);
-  const data: WikidataResponse = await response.json();
+    // validate the response structure
+    if (!data.results || !data.results.bindings) {
+      console.error("Invalid Wikidata response structure");
+      return {
+        imageUrl: null,
+        description: null,
+      };
+    }
 
-  // extract the first result (if any)
-  const binding = data.results.bindings[0];
-  const imageUrl = binding?.image?.value || null;
-  const description = binding?.description?.value || null;
+    // extract the first result (if any)
+    const binding = data.results.bindings[0];
+    const imageUrl = binding?.image?.value || null;
+    const description = binding?.description?.value || null;
 
-  return {
-    imageUrl,
-    description,
-  };
+    return {
+      imageUrl,
+      description,
+    };
+  } catch (error) {
+    // STAGE 2: Catch any other errors (network failures, etc.)
+    console.error("Error fetching Wikidata image:", error);
+    return {
+      imageUrl: null,
+      description: null,
+    };
+  }
 }

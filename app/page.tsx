@@ -115,9 +115,9 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  // const handlePageChange = (page: number) => {
+  //   setCurrentPage(page);
+  // };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -160,24 +160,24 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6 mt-6">
-        Welcome to Heritage Explorer Sweden!
+    <div className="max-w-7xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-8 mt-6 uppercase tracking-wide text-amber-900 border-b border-amber-900 pb-4">
+        Heritage Explorer Sweden
       </h1>
 
       {/* featured museums and popular locations */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-7">
-        <div>
-          <h2 className="text-xl font-semibold mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="border border-amber-900 p-5 bg-amber-50">
+          <h2 className="text-sm font-semibold mb-4 uppercase tracking-wide text-amber-900">
             Featured Museums in Stockholm
           </h2>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
             {FEATURED_MUSEUMS.map((museum) => (
               <div key={museum.id}>
                 <button
                   onClick={() => handleFeaturedMuseumClick(museum.name)}
-                  className="text-blue-600 hover:text-blue-800 text-left focus:outline-none focus:underline"
+                  className="text-amber-900 hover:text-amber-600 text-left focus:outline-none focus:text-amber-700 transition-colors duration-200 text-sm"
                 >
                   {museum.name}
                 </button>
@@ -185,14 +185,16 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Popular Locations</h2>
-          <div>
+        <div className="border border-stone-600 p-5 bg-stone-50">
+          <h2 className="text-sm font-semibold mb-4 uppercase tracking-wide text-stone-800">
+            Popular Locations
+          </h2>
+          <div className="space-y-2">
             {POPULAR_LOCATIONS.map((location) => (
               <div key={location.name}>
                 <button
                   onClick={() => handleLocationSearch(location.boundingBox)}
-                  className="text-blue-600 hover:text-blue-800 text-left focus:outline-none focus:underline"
+                  className="text-stone-800 hover:text-stone-500 text-left focus:outline-none focus:text-stone-600 transition-colors duration-200 text-sm"
                   aria-label={`Search for heritage sites in ${location.name}`}
                 >
                   {location.name}
@@ -204,11 +206,14 @@ export default function Home() {
       </div>
 
       {/* Search form */}
-      <div className="mb-6">
+      <div className="mb-6 border border-stone-700 p-5 bg-stone-50">
         {/* search input */}
         <div className="mb-4">
-          <label htmlFor="search" className="block text-lg mb-2">
-            Search heritage sites:
+          <label
+            htmlFor="search"
+            className="block text-sm font-medium mb-2 uppercase tracking-wide text-stone-800"
+          >
+            Search heritage sites
           </label>
           <input
             id="search"
@@ -221,92 +226,121 @@ export default function Home() {
                 handleSearch();
               }
             }}
-            className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+            className="w-full px-4 py-3 border border-stone-400 bg-white focus:outline-none focus:border-stone-800 transition-colors duration-200"
           />
+        </div>
+
+        {/* buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={handleSearch}
+            disabled={isLoading}
+            className="px-6 py-3 border border-amber-900 bg-amber-900 text-white hover:bg-amber-800 hover:border-amber-800 focus:outline-none focus:bg-amber-800 disabled:bg-gray-400 disabled:border-gray-400 disabled:cursor-not-allowed transition-colors duration-200 uppercase tracking-wide text-sm font-medium"
+          >
+            {isLoading ? "Searching..." : "Search"}
+          </button>
+
+          <button
+            onClick={handleReset}
+            className="px-6 py-3 border border-stone-600 bg-white text-stone-800 hover:border-stone-800 hover:bg-stone-100 focus:outline-none focus:border-stone-800 transition-colors duration-200 uppercase tracking-wide text-sm font-medium"
+          >
+            Reset
+          </button>
         </div>
       </div>
 
-      {/* buttons */}
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={handleSearch}
-          disabled={isLoading}
-          className="px-4 py-2 border border-blue-300 bg-blue-300 hover:bg-blue-400 focus:outline-none focus:border-blue-400 disabled:opacity-80"
-        >
-          {isLoading ? "Searching..." : "Search"}
-        </button>
-
-        <button
-          onClick={handleReset}
-          className="px-4 py-2 border border-gray-300 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:border-gray-500"
-        >
-          Reset
-        </button>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1">
           {/* left column: map */}
           <MapErrorBoundary>
             <Map sites={sites} />
           </MapErrorBoundary>
         </div>
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-6">
           {/* right column search results*/}
           <div>
-            {isLoading && <p className="text-gray-700">Loading...</p>}
-
-            {error && (
-              <div className="p-4 border border-gray-300">
-                <p className="text-gray-700">{error}</p>
+            {isLoading && (
+              <div className="border border-stone-400 p-6 bg-stone-50">
+                <div className="space-y-4 animate-pulse">
+                  <div className="h-4 bg-stone-300 w-3/4"></div>
+                  <div className="h-4 bg-stone-300 w-1/2"></div>
+                </div>
               </div>
             )}
 
-            <div className="grid gap-4">
+            {error && (
+              <div className="p-6 border-2 border-red-800 bg-red-50">
+                <p className="text-red-900 font-medium">{error}</p>
+              </div>
+            )}
+
+            <div className="space-y-3">
               {currentSites.map((site) => (
-                <div key={site.osmId} className="border border-gray-300 p-4">
-                  <h3 className="text-lg mb-2 text-gray-900">{site.name}</h3>
+                <div
+                  key={site.osmId}
+                  className="border border-stone-300 p-4 bg-white hover:border-amber-900 transition-colors duration-200"
+                >
+                  <h3 className="text-base font-semibold mb-3 text-stone-900">
+                    {site.name}
+                  </h3>
+                  <div className="flex gap-2 mb-3 text-xs">
+                    <span className="px-2 py-1 bg-amber-100 text-amber-900 uppercase tracking-wide border border-amber-900">
+                      {site.type}
+                    </span>
+                    <span className="px-2 py-1 border border-stone-400 text-stone-700 uppercase tracking-wide">
+                      {site.class}
+                    </span>
+                  </div>
                   <Link
                     href={`/site-details?osmId=${site.osmId}&osmType=${site.osmType}`}
-                    className="text-blue-600 hover:text-blue-800 focus:outline-none focus:underline"
+                    className="inline-block px-4 py-2 bg-amber-900 text-white text-sm uppercase tracking-wide hover:bg-amber-800 focus:outline-none focus:bg-amber-800 transition-colors duration-200 border border-amber-900"
                     aria-label={`View details for ${site.name}`}
                   >
-                    View Details
+                    View Details →
                   </Link>
                 </div>
               ))}
             </div>
 
             {!isLoading && sites.length === 0 && searchQuery && (
-              <div className="p-4 border border-gray-300">
-                <p className="text-gray-700">
-                  No sites found. Try a different search!
+              <div className="p-8 border-2 border-stone-400 text-center bg-stone-50">
+                <h3 className="text-lg font-semibold text-stone-900 mb-2 uppercase tracking-wide">
+                  No Sites Found
+                </h3>
+                <p className="text-stone-700 mb-6">
+                  Try searching for a different location or category
                 </p>
+                <button
+                  onClick={handleReset}
+                  className="px-6 py-3 bg-amber-900 text-white hover:bg-amber-800 transition-colors uppercase tracking-wide text-sm border border-amber-900"
+                >
+                  Clear Search
+                </button>
               </div>
             )}
           </div>
 
           {/* pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-between items-center pt-4 border-t border-stone-400">
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="px-4 py-2 border border-gray-300 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:border-gray-500 disabled:opacity-50"
+                className="px-4 py-2 border border-stone-400 hover:border-amber-900 hover:bg-amber-50 focus:outline-none focus:border-amber-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200 uppercase tracking-wide text-sm text-stone-800"
               >
-                Previous
+                ← Previous
               </button>
 
-              <span className="text-gray-700">
+              <span className="text-sm text-stone-800 font-medium">
                 Page {currentPage} of {totalPages}
               </span>
 
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 border border-gray-300 bg-gray-300 hover:bg-gray-400 focus:outline-none focus:border-gray-500 disabled:opacity-50"
+                className="px-4 py-2 border border-stone-400 hover:border-amber-900 hover:bg-amber-50 focus:outline-none focus:border-amber-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200 uppercase tracking-wide text-sm text-stone-800"
               >
-                Next
+                Next →
               </button>
             </div>
           )}
