@@ -161,7 +161,7 @@ export default function Home() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-8 mt-6 uppercase tracking-wide text-amber-900 border-b border-amber-900 pb-4">
+      <h1 className="text-2xl font-bold mb-4 mt-6 uppercase tracking-wide text-amber-900 border-amber-900 pb-4">
         Heritage Explorer Sweden
       </h1>
 
