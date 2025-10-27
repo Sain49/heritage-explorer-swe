@@ -49,7 +49,7 @@ export default function ContactUs() {
             Message Sent
           </h2>
           <p className="text-stone-800 mb-6">
-            Thank you for contacting us. We'll get back to you soon.
+            Thank you for contacting us. We&aposll get back to you soon.
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
