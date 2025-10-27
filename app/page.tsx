@@ -115,9 +115,9 @@ export default function Home() {
     setIsLoading(false);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  // const handlePageChange = (page: number) => {
+  //   setCurrentPage(page);
+  // };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
