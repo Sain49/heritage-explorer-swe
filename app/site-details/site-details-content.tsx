@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 import type { OSMElement } from "@/types/site";
 import { fetchOSMDetails, getTagValue } from "@/lib/api/osm";
@@ -228,16 +229,14 @@ export default function SiteDetails() {
                 Loading additional information...
               </p>
             )}
-
             {wikidataData?.imageUrl && (
               <div className="relative h-64 md:h-96 w-full overflow-hidden mt-6 border border-amber-900">
-                <img
+                <Image
                   src={wikidataData.imageUrl}
                   alt={getTagValue(osmDetails.tags, "name") || "Site image"}
+                  width={1200}
+                  height={800}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
                 />
               </div>
             )}
