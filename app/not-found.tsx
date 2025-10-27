@@ -20,7 +20,7 @@ export default function NotFound() {
 
       {/* Button to go back home */}
       <Link href="/">
-        <button className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+        <button className="px-6 py-3 bg-blue-400 text-white hover:bg-blue-500 transition-colors">
           Back to Home
         </button>
       </Link>
