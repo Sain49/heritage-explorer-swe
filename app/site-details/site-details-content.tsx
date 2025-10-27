@@ -94,7 +94,7 @@ export default function SiteDetails() {
   if (!osmId || !osmType) {
     return (
       <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-8 uppercase tracking-wide text-amber-900 border-b border-amber-900 pb-4">
+        <h1 className="text-2xl font-bold mb-4 uppercase tracking-wide text-amber-900 border-amber-900 pb-4">
           Site Details
         </h1>
         <div className="p-6 border-2 border-red-800 bg-red-50">
@@ -113,15 +113,19 @@ export default function SiteDetails() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="mb-8">
-        <Link href="/">
-          <button className="mb-6 px-6 py-3 border border-stone-600 text-stone-800 hover:border-amber-900 hover:bg-amber-50 transition-colors uppercase tracking-wide text-sm">
-            ← Back to Explorer
-          </button>
-        </Link>
-        <h1 className="text-2xl font-bold uppercase tracking-wide text-amber-900 border-b border-amber-900 pb-4">
-          Site Details
-        </h1>
+      <div className="grid grid-cols-2 items-center mb-6 mt-6">
+        <div>
+          <h1 className="text-2xl font-bold uppercase tracking-wide text-amber-900">
+            Site Details
+          </h1>
+        </div>
+        <div className="text-right">
+          <Link href="/">
+            <button className="px-6 py-3 border border-stone-600 text-stone-800 hover:border-amber-900 hover:bg-amber-50 transition-colors uppercase tracking-wide text-sm">
+              ← Back to Explorer
+            </button>
+          </Link>
+        </div>
       </div>
 
       {isLoading && (
@@ -176,7 +180,7 @@ export default function SiteDetails() {
                     href={getTagValue(osmDetails.tags, "website") || undefined}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-amber-900 hover:text-amber-700 transition-colors underline break-words mb-3 sm:mb-0"
+                    className="text-amber-900 hover:text-amber-700 transition-colors break-words mb-3 sm:mb-0"
                   >
                     {getTagValue(osmDetails.tags, "website")}
                   </a>
