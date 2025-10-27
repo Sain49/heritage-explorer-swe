@@ -118,7 +118,14 @@ export default function SiteDetails() {
       </div>
 
       {isLoading && (
-        <p className="text-blue-600 mb-4">Loading site details...</p>
+        <div className="space-y-6 animate-pulse">
+          <div className="h-8 bg-gray-200 w-3/4"></div>
+          <div className="h-64 bg-gray-200"></div>
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200"></div>
+            <div className="h-4 bg-gray-200 w-5/6"></div>
+          </div>
+        </div>
       )}
 
       {error && <p className="text-red-600 mb-4">{error}</p>}
@@ -126,24 +133,26 @@ export default function SiteDetails() {
       {osmDetails && (
         <div className="space-y-6">
           <div className="bg-white border border-gray-200 p-4">
-            <div className="grid gap-3">
+            <div className="grid grid-cols-[minmax(auto,max-content)_1fr] gap-x-8 gap-y-3">
               {getTagValue(osmDetails.tags, "name") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Name:</span>
+                <>
+                  <span className="font-medium whitespace-nowrap">Name:</span>
                   <span>{getTagValue(osmDetails.tags, "name")}</span>
-                </div>
+                </>
               )}
 
               {getTagValue(osmDetails.tags, "phone") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Phone:</span>
+                <>
+                  <span className="font-medium whitespace-nowrap">Phone:</span>
                   <span>{getTagValue(osmDetails.tags, "phone")}</span>
-                </div>
+                </>
               )}
 
               {getTagValue(osmDetails.tags, "website") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Website:</span>
+                <>
+                  <span className="font-medium whitespace-nowrap">
+                    Website:
+                  </span>
                   <a
                     href={getTagValue(osmDetails.tags, "website") || undefined}
                     target="_blank"
@@ -152,26 +161,32 @@ export default function SiteDetails() {
                   >
                     {getTagValue(osmDetails.tags, "website")}
                   </a>
-                </div>
+                </>
               )}
 
               {getTagValue(osmDetails.tags, "opening_hours") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Opening Hours:</span>
+                <>
+                  <span className="font-medium whitespace-nowrap">
+                    Opening Hours:
+                  </span>
                   <span>{getTagValue(osmDetails.tags, "opening_hours")}</span>
-                </div>
+                </>
               )}
 
               {getTagValue(osmDetails.tags, "description") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Description:</span>
+                <>
+                  <span className="font-medium whitespace-nowrap">
+                    Description:
+                  </span>
                   <span>{getTagValue(osmDetails.tags, "description")}</span>
-                </div>
+                </>
               )}
 
               {getTagValue(osmDetails.tags, "addr:street") && (
-                <div className="flex">
-                  <span className="font-medium w-32">Address:</span>
+                <>
+                  <span className="font-medium whitespace-nowrap">
+                    Address:
+                  </span>
                   <span>
                     {getTagValue(osmDetails.tags, "addr:street")}
                     {getTagValue(osmDetails.tags, "addr:housenumber") &&
@@ -181,27 +196,29 @@ export default function SiteDetails() {
                     {getTagValue(osmDetails.tags, "addr:city") &&
                       ` ${getTagValue(osmDetails.tags, "addr:city")}`}
                   </span>
-                </div>
-              )}
-
-              {/* show loading state for Wikidata */}
-              {wikidataLoading && (
-                <p className="text-gray-500 text-sm">
-                  Loading additional information...
-                </p>
-              )}
-
-              {wikidataData && (
-                <div>
-                  {wikidataData.imageUrl && (
-                    <img src={wikidataData.imageUrl} alt="Site image" />
-                  )}
-                  {wikidataData.description && (
-                    <p>{wikidataData.description}</p>
-                  )}
-                </div>
+                </>
               )}
             </div>
+
+            {/* show loading state for Wikidata */}
+            {wikidataLoading && (
+              <p className="text-gray-500 text-sm mt-4">
+                Loading additional information...
+              </p>
+            )}
+
+            {wikidataData?.imageUrl && (
+              <div className="relative h-64 md:h-96 w-full overflow-hidden mt-4 border border-gray-200">
+                <img
+                  src={wikidataData.imageUrl}
+                  alt={getTagValue(osmDetails.tags, "name") || "Site image"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}
