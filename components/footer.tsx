@@ -10,7 +10,7 @@ export default function Footer() {
           </div>
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 text-xs">
             <p className="text-stone-600 uppercase tracking-wide">
-              Data sourced from Nominatim, OpenStreetMap, Wikidata
+              Data sourced from OpenStreetMap & Wikidata
             </p>
             <Link
               href="/contact-us"
