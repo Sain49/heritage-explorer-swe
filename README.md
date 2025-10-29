@@ -15,7 +15,7 @@ A simple Next.js 15 + TypeScript app to explore Sweden’s cultural heritage sit
 
 ## 📖 About
 
-This project helps you find museums, castles, monuments, and more across Sweden. You can search by name or category, zoom to popular areas, see results on a map, and view details (with optional images from Wikidata).
+This app helps you find museums, castles, monuments, and more across Sweden. You can search by name or category, zoom to popular areas, see results on a map, and view details (with optional images from Wikidata).
 
 ## ✨ Features
 
